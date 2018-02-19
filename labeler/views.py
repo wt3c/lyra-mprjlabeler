@@ -64,6 +64,8 @@ def campanha(request, idcampanha):
 
 def login(request):
     "Tela de login"
+    status = 200
+
     if request.method == 'POST':
         usuario = Autenticador().authenticate(request,
                                               request.POST.get('username', ''),
@@ -75,5 +77,6 @@ def login(request):
         else:
             messages.add_message(request, messages.ERROR,
                                  'Usuário ou Senha inválidos')
+            status = 403
 
-    return render(request, 'labeler/login.html')
+    return render(request, 'labeler/login.html', status=status)

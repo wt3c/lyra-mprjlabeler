@@ -13,12 +13,13 @@ class Autenticador:
         del request
         password = bytes(password, 'utf-8')
         session = requests.session()
-        response = session.post(url=settings.AUTH_MPRJ,
-                                data={
-                                    'username': username,
-                                    'password': base64.b64encode(password).
-                                    decode("utf-8")
-                                })
+
+        response = session.post(
+            url=settings.AUTH_MPRJ,
+            data={
+                'username': username,
+                'password': base64.b64encode(password).decode("utf-8")
+            })
         if response.status_code == 200:
             try:
                 user = User.objects.get(username=username)
