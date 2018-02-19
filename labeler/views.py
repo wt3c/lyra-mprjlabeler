@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as django_login
 from .backends import Autenticador
-from .models import Campanha, Resposta
+from .models import Campanha
 from .forms import RespostaForm
 
 
@@ -23,15 +23,9 @@ def campanha(request, idcampanha):
     "Tela para responder tarefas de campanha"
     campanha_ativa = get_object_or_404(Campanha, id=idcampanha)
 
-    tarefa = campanha_ativa.obter_tarefa(request.user.username)
-
-    if not tarefa:
-        return render(
-            request,
-            'labeler/finalizado.html',
-            {'campanha': campanha_ativa})
-
     form = RespostaForm(campos=campanha_ativa.formulario.estrutura['campos'])
+
+    tarefa = campanha_ativa.obter_tarefa(request.user.username)
 
     if request.method == 'POST':
         form = RespostaForm(
@@ -39,17 +33,25 @@ def campanha(request, idcampanha):
             campos=campanha_ativa.formulario.estrutura['campos'])
         form.is_valid()
 
+        respostas = []
+
         for campo in form.fields:
-            resposta = Resposta()
-            resposta.username = request.user.username
-            resposta.tarefa = tarefa
-            resposta.nomecampo = campo
-            resposta.valor = str(form.cleaned_data[campo])
-            resposta.save()
+            respostas += [{
+                'nomecampo': campo,
+                'resposta': str(form.cleaned_data[campo])
+            }]
+
+        tarefa.votar(request.user.username, respostas)
 
         tarefa = campanha_ativa.obter_tarefa(request.user.username)
         form = RespostaForm(
             campos=campanha_ativa.formulario.estrutura['campos'])
+
+    if not tarefa:
+        return render(
+            request,
+            'labeler/finalizado.html',
+            {'campanha': campanha_ativa})
 
     return render(
         request,

@@ -19,6 +19,7 @@ class RespostaForm(forms.Form):
                 valores = campo['valores']
                 nome = campo['nome']
                 label = campo['label']
+                obrigatorio = False
                 if 'obrigatorio' in campo:
                     obrigatorio = campo['obrigatorio']
 

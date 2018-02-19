@@ -114,6 +114,17 @@ class Tarefa(models.Model):
     classificacao = models.CharField(max_length=500)
     campanha = models.ForeignKey('Campanha', on_delete=models.DO_NOTHING)
 
+    def votar(self, username, respostas):
+        "computa mais um voto para o usuario nesta tarefa"
+
+        for resposta_informada in respostas:
+            resposta = Resposta()
+            resposta.username = username
+            resposta.tarefa = self
+            resposta.nome_campo = resposta_informada['nomecampo']
+            resposta.valor = resposta_informada['resposta']
+            resposta.save()
+
 
 class Trabalho(models.Model):
     "Grupo de tarefas por campanha alocadas para um usuário classificar"
