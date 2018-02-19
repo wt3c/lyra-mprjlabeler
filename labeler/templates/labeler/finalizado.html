@@ -1,0 +1,27 @@
+{% extends 'labeler/index.html' %}
+{% load static %}
+{% block 'content' %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                {{campanha.nome}}
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 class="box-title m-b-0">Muito obrigado!</h3>
+                        <p class="text-muted m-b-30 font-13"> Você acaba de deixar o Lyra um pouquinho mais inteligente!</p>
+                        <p class="text-muted m-b-30 font-13"> Agradecemos o seu tempo e atenção! Volte sempre!</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <img src="{% static 'labeler/img/happy_robot.gif' %}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

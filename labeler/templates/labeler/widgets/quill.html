@@ -1,0 +1,11 @@
+<textarea id="{{ id }}" {{final_attrs}}  rows="10" cols="40" class="vLargeTextField" onkeyup="atualizar('{{id}}')">{{value}}</textarea>
+<code id='fonte_{{id}}' class"prettyprint linenums lang-yaml" ></code>
+
+<script>
+    function atualizar(id) {
+        document.getElementById('fonte_{{id}}').innerHTML = document.getElementById('{{id}}').value;
+    }
+</script>
+
+<script>
+</script>

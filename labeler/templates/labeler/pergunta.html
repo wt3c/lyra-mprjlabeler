@@ -1,0 +1,59 @@
+{% extends 'labeler/index.html' %}
+{% load tags_extras %}
+{% block 'content' %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                {{campanha.nome}}
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        {% completude campanha request.user.username %}
+                        <h5>Progresso
+                            <span class="pull-right">{{porcentagem}}%</span>
+                        </h5>
+                        <div class="progress progress-lg">
+                            <div class="progress-bar progress-bar-info" aria-valuenow="{{porcentagem}}" aria-valuemin="0" aria-valuemax="100" style="width: {{porcentagem}}%"
+                                role="progressbar">
+                                <span class="sr-only">{{porcentagem}}% completo</span>
+                            </div>
+                        </div>
+                    </div>
+                    <form method="post" action="{% url 'campanha' campanha.id%}" class="form-horizontal">
+                        {% csrf_token %}
+                        <div class="form-body">
+                            {% for field in form %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-groug">
+                                        <label class="control-label col-md-3">{{field.label}}</label>
+                                        <div class="col-md-9">
+                                            {{field}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <button type="submit" class="btn btn-success">Enviar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <h3 class="box-title">Texto Original</h3>
+                    <hr> {{tarefa.texto_original}}
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <h3 class="box-title">Texto Destacado</h3>
+                    <hr> {{tarefa.texto_inteligencia}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

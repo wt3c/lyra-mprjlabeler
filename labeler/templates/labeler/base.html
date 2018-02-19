@@ -1,0 +1,47 @@
+{% load static %}
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Lyra Labeler</title>
+    <link href="{% static 'labeler/bootstrap/dist/css/bootstrap.min.css'%}" rel="stylesheet">
+    <!-- ===== Plugin CSS ===== -->
+    <link href="{% static  'labeler/plugins/components/chartist-js/dist/chartist.min.css'%}" rel="stylesheet">
+    <link href="{% static  'labeler/plugins/components/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css'%}" rel="stylesheet">
+    <!-- ===== Animation CSS ===== -->
+    <link href="{% static 'labeler/css/animate.css'%}" rel="stylesheet">
+    <!-- ===== Custom CSS ===== -->
+    <link href="{% static 'labeler/css/style.css'%}" rel="stylesheet">
+    <!-- ===== Color CSS ===== -->
+    <link href="{% static 'labeler/css/colors/default-dark.css'%}" id="theme" rel="stylesheet">
+
+    
+</head>
+{% block body%}<body>{% endblock %}
+{% block basecontent %}
+{% endblock %}
+
+<!-- jQuery -->
+<script src="{% static 'labeler/plugins/components/jquery/dist/jquery.min.js'%}"></script>
+<!-- Bootstrap Core JavaScript -->
+<script src="{% static 'labeler/bootstrap/dist/js/bootstrap.min.js'%}"></script>
+<!-- Menu Plugin JavaScript -->
+<script src="{% static 'labeler/js/sidebarmenu.js'%}"></script>
+<!--slimscroll JavaScript -->
+<script src="{% static 'labeler/js/jquery.slimscroll.js'%}"></script>
+<!--Wave Effects -->
+<script src="{% static 'labeler/js/waves.js'%}"></script>
+<!-- Custom Theme JavaScript -->
+<script src="{% static 'labeler/js/custom.js'%}"></script>
+<!--Style Switcher -->
+<script src="{% static 'labeler/plugins/components/styleswitcher/jQuery.style.switcher.js'%}"></script>
+
+{% include 'labeler/widgets/message.html' %}
+
+</body>
+</html>

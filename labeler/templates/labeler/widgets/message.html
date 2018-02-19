@@ -1,0 +1,18 @@
+{% if messages %}
+{% for message in messages %}
+    <div class="myadmin-alert myadmin-alert-icon myadmin-alert-click alert-danger myadmin-alert-bottom alertbottom"> 
+        <i class="ti-user"></i> {{message}} <a href="#" class="closed">&times;</a> 
+    </div>
+{% endfor %}
+<script>
+    $(document).ready(() => {
+        $(".alertbottom").fadeToggle(350);
+
+        /* Click to close */
+        $(".myadmin-alert-click").click(function(event) {
+            $(this).fadeToggle(350);
+            return false;
+        });
+    })
+</script>
+{% endif %}
