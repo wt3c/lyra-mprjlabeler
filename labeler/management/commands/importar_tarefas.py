@@ -1,10 +1,12 @@
+"Importação de arquivos JSON com Tarefas"
 import json
 from django.core.management.base import BaseCommand, CommandError
 from labeler.models import Campanha, Tarefa
 
+
 class Command(BaseCommand):
     "importa um json com as tarefas de uma campanha"
-    
+
     help = __doc__
 
     def add_arguments(self, parser):
@@ -17,9 +19,8 @@ class Command(BaseCommand):
 
         try:
             campanha = Campanha.objects.get(id=id_campanha)
-        except:
+        except Campanha.DoesNotExist:
             raise CommandError("O ID de campanha informado não existe")
-
 
         arquivo = json.load(open(arquivo))
 

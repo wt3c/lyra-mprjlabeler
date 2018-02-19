@@ -1,6 +1,7 @@
 astroid==1.6.1
 certifi==2018.1.18
 chardet==3.0.4
+coverage==4.5.1
 decorator==4.2.1
 Django==2.0.2
 django-bootstrap4==0.0.5
