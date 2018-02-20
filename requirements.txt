@@ -1,6 +1,7 @@
 astroid==1.6.1
 certifi==2018.1.18
 chardet==3.0.4
+codecov==2.0.15
 cookies==2.2.1
 coverage==4.5.1
 decorator==4.2.1
