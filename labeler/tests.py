@@ -47,7 +47,7 @@ class LoginTestCase(TestCase):
     "Testes do método de login"
 
     def test_login(self):
-        "Login simples"
+        "Login simples "
         cliente = Client()
 
         with HTTMock(auth_ok, info_auth_ok):
