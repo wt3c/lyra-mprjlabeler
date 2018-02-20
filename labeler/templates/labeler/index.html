@@ -1,7 +1,17 @@
 {% extends 'labeler/base.html' %}
+{% block body %}<body class="mini-sidebar fix-header">{% endblock %}
 {% block basecontent %}
-    <div class="container-fluid">
-        {% block 'content' %}
-        {% endblock %}
+<div id="wrapper">
+    <div class="preloader">
+        <div class="cssload-speeding-wheel"></div>
     </div>
+    {% include 'labeler/widgets/topmenu.html'%}
+    <div class="page-wrapper">
+        <div class="container-fluid">
+            {% block 'content' %}
+            {% endblock %}
+        </div>
+    </div>
+    {% include 'labeler/widgets/sidemenu.html' %}
+</div>
 {% endblock %}

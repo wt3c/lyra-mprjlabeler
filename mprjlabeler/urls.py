@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.views.generic.base import RedirectView
+from django.contrib.auth.views import logout
 from labeler.views import campanhas, campanha, login
 
 urlpatterns = [
@@ -22,4 +24,12 @@ urlpatterns = [
     path('campanhas/', campanhas, name='campanhas'),
     path('campanhas/<int:idcampanha>/', campanha, name='campanha'),
     path('login/', login, name='login'),
+    path('', RedirectView.as_view(
+        url='campanhas/',
+        permanent=True),
+         name='index'),
+    path('logout/',
+         logout,
+         {'next_page': '/'},
+         name='logout')
 ]
