@@ -33,7 +33,7 @@ class RespostaForm(forms.Form):
                     label=label,
                     required=obrigatorio)
 
-                self.fields[nome] = field
+                field.widget.attrs.update({'class': 'form-control'})
 
             if 'check' in campo:
                 campo = campo['check']
@@ -46,4 +46,7 @@ class RespostaForm(forms.Form):
                     initial=default,
                     required=False)
 
+                field.widget.attrs.update({'class': 'check'})
+
+            if field:
                 self.fields[nome] = field

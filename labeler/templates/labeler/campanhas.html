@@ -8,26 +8,7 @@
             <div class="panel-body">
                 <div class="table-responsive">
                     {% for campanha in campanhas%} 
-                        <div class="panel panel-info">
-                            <div class="panel-heading"><a href="{% url 'campanha' campanha.id %}">{{ campanha }}</a>
-                                <div class="pull-right">
-                                    <a href="#" data-perform="panel-collapse"><i class="ti-plus"></i></a> 
-                                </div>
-                            </div>
-                            <div class="panel-wrapper collapse" aria-expanded="true">
-                                <div class="panel-body">
-                                    <div>
-                                        {{campanha.descricao|safe}}
-                                    </div>
-                                    <div class="progress progress-lg">
-                                        {% completude campanha request.user.username %}
-                                        <div class="progress-bar progress-bar-success" 
-                                                style="width: {{porcentagem}}%;"
-                                                role="progressbar">{{porcentagem}}%</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        {% include 'labeler/widgets/item-campanha.html' %}
                     {% endfor %}
                 </div>
             </div>

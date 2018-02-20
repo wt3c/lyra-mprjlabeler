@@ -15,8 +15,12 @@
                             <span class="pull-right">{{porcentagem}}%</span>
                         </h5>
                         <div class="progress progress-lg">
-                            <div class="progress-bar progress-bar-info" aria-valuenow="{{porcentagem}}" aria-valuemin="0" aria-valuemax="100" style="width: {{porcentagem}}%"
-                                role="progressbar">
+                            <div class="progress-bar progress-bar-info" 
+                                 aria-valuenow="{{porcentagem}}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100" 
+                                 style="width: {{porcentagem}}%"
+                                 role="progressbar">
                                 <span class="sr-only">{{porcentagem}}% completo</span>
                             </div>
                         </div>
@@ -28,7 +32,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-groug">
-                                        <label class="control-label col-md-3">{{field.label}}</label>
+                                        <label for="id_{{field.name}}" class="control-label col-md-3">{{field.label}}</label>
                                         <div class="col-md-9">
                                             {{field}}
                                         </div>
@@ -46,11 +50,17 @@
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <h3 class="box-title">Texto Original</h3>
-                    <hr> {{tarefa.texto_original}}
+                    <hr> 
+                    <pre style="text-transform: uppercase; text-align: justify; white-space: pre-line; word-break: unset;">
+                        {{tarefa.texto_original}}
+                    </pre>
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <h3 class="box-title">Texto Destacado</h3>
-                    <hr> {{tarefa.texto_inteligencia}}
+                    <hr> 
+                    <pre style="text-transform: uppercase; text-align: justify; white-space: pre-line; word-break: unset;">
+                        {{tarefa.texto_inteligencia}}
+                    </pre>
                 </div>
             </div>
         </div>

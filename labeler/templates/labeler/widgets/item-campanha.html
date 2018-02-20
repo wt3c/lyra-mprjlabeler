@@ -1,0 +1,36 @@
+{% load tags_extras %}
+<div class="panel panel-info">
+    <div class="panel-heading" style="cursor:pointer;" 
+         data-perform="panel-collapse">
+        {{ campanha }}
+        <div class="pull-right">
+            <a href="#" data-perform="panel-collapse"><i class="ti-plus"></i></a> 
+        </div>
+    </div>
+    <div class="panel-wrapper collapse" aria-expanded="true">
+        <div class="panel-body">
+            <div>
+                {{campanha.descricao|safe}}
+            </div>
+            <div class="progress progress-lg">
+                {% completude campanha request.user.username %}
+                <div class="progress-bar progress-bar-success" 
+                        style="width: {{porcentagem}}%;"
+                        role="progressbar">{{porcentagem}}%</div>
+            </div>
+            <div>
+                {% if porcentagem != 100%}
+                <div class="col-lg-2 col-sm-4 col-xs-12">
+                    <a href="{% url 'campanha' campanha.id %}" 
+                       class="btn btn-block btn-outline btn-success">Responder</a>
+                </div>
+                {% else %}
+                <div class="col-lg-2 col-sm-4 col-xs-12">
+                    <a href="{% url 'campanha' campanha.id %}" 
+                        class="btn btn-block btn-outline btn-warning">Responder Novamente</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
