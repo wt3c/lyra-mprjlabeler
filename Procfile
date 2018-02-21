@@ -1,0 +1,1 @@
+web: gunicorn mprjlabeler.wsgi:application --log-file -
