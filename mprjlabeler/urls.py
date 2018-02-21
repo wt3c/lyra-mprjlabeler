@@ -20,6 +20,7 @@ from django.contrib.auth.views import logout
 from django.conf.urls.static import static
 from django.conf import settings
 from labeler.views import campanhas, campanha, login
+from labeler.api import tarefa
 
 
 urlpatterns = [
@@ -34,5 +35,8 @@ urlpatterns = [
     path('logout/',
          logout,
          {'next_page': '/'},
-         name='logout')
+         name='logout'),
+    path('api/tarefa/<int:idcampanha>/',
+         tarefa,
+         name='api_tarefa')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

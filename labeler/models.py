@@ -125,6 +125,16 @@ class Tarefa(models.Model):
             resposta.valor = resposta_informada['resposta']
             resposta.save()
 
+    @staticmethod
+    def importar_tarefas(campanha, tarefas):
+        'Importa uma lista de tarefas'
+        for item in tarefas:
+            tarefa = Tarefa()
+            tarefa.campanha = campanha
+            tarefa.texto_original = item['original']
+            tarefa.texto_inteligencia = item['parseado']
+            tarefa.save()
+
 
 class Trabalho(models.Model):
     "Grupo de tarefas por campanha alocadas para um usuário classificar"

@@ -24,9 +24,4 @@ class Command(BaseCommand):
 
         arquivo = json.load(open(arquivo))
 
-        for item in arquivo:
-            tarefa = Tarefa()
-            tarefa.campanha = campanha
-            tarefa.texto_original = item['original']
-            tarefa.texto_inteligencia = item['parseado']
-            tarefa.save()
+        Tarefa.importar_tarefas(campanha, arquivo)
