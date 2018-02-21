@@ -17,7 +17,10 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic.base import RedirectView
 from django.contrib.auth.views import logout
+from django.conf.urls.static import static
+from django.conf import settings
 from labeler.views import campanhas, campanha, login
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,4 +35,4 @@ urlpatterns = [
          logout,
          {'next_page': '/'},
          name='logout')
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
