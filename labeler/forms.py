@@ -25,15 +25,16 @@ class RespostaForm(forms.Form):
 
                 if campo['cardinalidade'] == 'multipla':
                     tipo_campo = forms.MultipleChoiceField
+                    widget = forms.CheckboxSelectMultiple
                 else:
                     tipo_campo = forms.ChoiceField
+                    widget = forms.RadioSelect
 
                 field = tipo_campo(
                     choices=zip(valores, opcoes),
                     label=label,
-                    required=obrigatorio)
-
-                field.widget.attrs.update({'class': 'form-control'})
+                    required=obrigatorio,
+                    widget=widget)
 
             if 'check' in campo:
                 campo = campo['check']
