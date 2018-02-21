@@ -128,10 +128,11 @@ AUTH_MPRJ = 'http://apps.mprj.mp.br/mpmapas/api/authentication'
 AITJ_MPRJ_USERINFO = 'http://apps.mprj.mp.br/mpmapas/api/authenticate'
 LOGIN_URL = '/login/'
 
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 if "AMBIENTE" in os.environ and os.environ["AMBIENTE"] == "heroku":
     # Parametros para rodar no heroku
     DATABASES = {
         'default': dj_database_url.config()
     }
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     DEBUG = False
