@@ -19,13 +19,13 @@ def campanhas(request):
 
 
 @login_required
-def campanha(request, idcampanha):
+def campanha(request, idcampanha, pedirnovo=False):
     "Tela para responder tarefas de campanha"
     campanha_ativa = get_object_or_404(Campanha, id=idcampanha)
 
     form = RespostaForm(campos=campanha_ativa.formulario.estrutura['campos'])
 
-    tarefa = campanha_ativa.obter_tarefa(request.user.username)
+    tarefa = campanha_ativa.obter_tarefa(request.user.username, pedirnovo)
 
     if request.method == 'POST':
         form = RespostaForm(

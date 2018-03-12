@@ -23,15 +23,14 @@ class Campanha(models.Model):
     ativa = models.BooleanField(default=False)
 
     def _quantidade_tarefas_respondidas(self, usuario):
-        trabalho = Trabalho.objects.filter(
-            tarefas__campanha__id=self.id,
-            username=usuario).first()
+        trabalho = self.obter_trabalho(usuario)
         if not trabalho:
             return 0
         ids_tarefas = trabalho.tarefas.values_list('id', flat=True)
         ids_tarefas_respondidas = Resposta.objects.filter(
             tarefa__id__in=ids_tarefas,
-            username=usuario).values_list('tarefa_id', flat=True)
+            username=usuario,
+            trabalho__id=trabalho.id).values_list('tarefa_id', flat=True)
         quantidade_tarefas_respondidas = self.tarefa_set.filter(
             id__in=ids_tarefas_respondidas).count()
 
@@ -44,13 +43,31 @@ class Campanha(models.Model):
             (self._quantidade_tarefas_respondidas(usuario)*100)
             / self.tarefas_por_trabalho)
 
-    def obter_tarefa(self, usuario):
+    def obter_trabalho(self, usuario):
+        """Obtém o último trabalho de respostas do usuário"""
+        return Trabalho.objects.filter(
+            tarefas__campanha__id=self.id,
+            username=usuario).order_by('-id').first()
+
+    def obter_tarefa(self, usuario, gerar_novo_trabalho=False):
         """Obtem uma tarefa para uma campanha ativa.
 Retorna nulo para campanhas com tarefas completas.
 Cria um job de tarefa para um usuário caso ele não exista. """
-        trabalho_ativo = Trabalho.objects.filter(
-            tarefas__campanha__id=self.id,
-            username=usuario).first()
+        trabalho_ativo = self.obter_trabalho(usuario)
+
+        # se a situacao do trabalho for inativa não retorna tarefa nenhuma
+        if (trabalho_ativo and
+                trabalho_ativo.situacao == 'F' and
+                not gerar_novo_trabalho):
+            return None
+
+        # se a situacao do trabalho for inativa e ousuário quiser
+        # alocar mais um grupo de trabalho, permite
+        if (trabalho_ativo and
+                trabalho_ativo.situacao == 'F' and
+                gerar_novo_trabalho):
+            trabalho_ativo = None
+
         if not trabalho_ativo:
 
             # Caso não tenha trabalho ativo,
@@ -63,7 +80,8 @@ Cria um job de tarefa para um usuário caso ele não exista. """
             tarefas = Tarefa.objects.filter(id__in=tarefas_trabalho)
 
             trabalho_ativo = Trabalho(
-                username=usuario
+                username=usuario,
+                situacao='A'
             )
             trabalho_ativo.save()
             trabalho_ativo.tarefas.set(tarefas)
@@ -71,8 +89,14 @@ Cria um job de tarefa para um usuário caso ele não exista. """
         ids_tarefas_realizadas = trabalho_ativo.tarefas.filter(
             resposta__username=usuario).values_list('id', flat=True)
 
-        return trabalho_ativo.tarefas.exclude(
+        tarefa = trabalho_ativo.tarefas.exclude(
             id__in=ids_tarefas_realizadas).first()
+
+        if trabalho_ativo.situacao == 'A' and not tarefa:
+            trabalho_ativo.situacao = 'F'
+            trabalho_ativo.save()
+
+        return tarefa
 
     def __str__(self):
         return self.nome
@@ -116,11 +140,14 @@ class Tarefa(models.Model):
 
     def votar(self, username, respostas):
         "computa mais um voto para o usuario nesta tarefa"
+        trabalho = self.campanha.obter_trabalho(username)
 
+        # acrescenta a resposta
         for resposta_informada in respostas:
             resposta = Resposta()
             resposta.username = username
             resposta.tarefa = self
+            resposta.trabalho = trabalho
             resposta.nome_campo = resposta_informada['nomecampo']
             resposta.valor = resposta_informada['resposta']
             resposta.save()
@@ -136,15 +163,26 @@ class Tarefa(models.Model):
             tarefa.save()
 
 
+SITUACOES_TRABALHO = (
+    ('A', 'Aberto'),
+    ('F', 'Finalizado'),
+)
+
+
 class Trabalho(models.Model):
     "Grupo de tarefas por campanha alocadas para um usuário classificar"
     tarefas = models.ManyToManyField('Tarefa')
     username = models.TextField(max_length=255)
+    situacao = models.CharField(
+        max_length=1,
+        choices=SITUACOES_TRABALHO,
+        default='A')
 
 
 class Resposta(models.Model):
     "Registro de resposta do usuário para uma tarefa"
     tarefa = models.ForeignKey('Tarefa', on_delete=models.DO_NOTHING)
+    trabalho = models.ForeignKey('Trabalho', on_delete=models.CASCADE)
     username = models.TextField(max_length=255)
     nome_campo = models.CharField(max_length=255)
     valor = models.CharField(max_length=50)
