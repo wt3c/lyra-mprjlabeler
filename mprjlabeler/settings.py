@@ -131,7 +131,7 @@ LOGIN_URL = '/login/'
 
 #STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-if "AMBIENTE" in os.environ and os.environ["AMBIENTE"] == "heroku":
+if "AMBIENTE" in os.environ and os.environ["AMBIENTE"] == "producao":
     # Parametros para rodar no heroku
     DATABASES = {
         'default': dj_database_url.config()
