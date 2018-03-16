@@ -5,6 +5,17 @@
     "python.linting.ignorePatterns": [
         ".vscode/*.py",
         "**/site-packages/**/*.py",
-        "**/migrations/**/*.py"
-    ]
+        "**/migrations/**/*.py",
+        "venv"
+    ],
+    "python.venvFolders": [
+        "envs",
+        ".pyenv",
+        ".direnv"
+      ],
+    "files.exclude": {
+        "**/.git": true,
+        "**/.DS_Store": true,
+        "venv": true
+    }
 }
