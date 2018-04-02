@@ -21,7 +21,7 @@ class Completude(TestCase):
 
         completude_geral = campanha.obter_completude_geral()
 
-        self.assertEqual(completude_geral, 1)
+        self.assertEqual(completude_geral, 10)
 
     def test_completude_geral_da_campanha_multiplas_respostas(self):
         """
@@ -38,4 +38,4 @@ class Completude(TestCase):
 
         completude_geral = campanha.obter_completude_geral()
 
-        self.assertEqual(completude_geral, 3)
+        self.assertEqual(completude_geral, 30)
