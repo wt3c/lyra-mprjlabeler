@@ -12,16 +12,10 @@ from .forms import RespostaForm
 def campanhas(request):
     "View para retornar lista de Campanhas"
     campanhas_ativas = Campanha.objects.filter(ativa=True)
-    completude_campanhas = [camp.obter_completude_geral() for
-                            camp in campanhas_ativas]
-    contexto = {
-        'campanhas': campanhas_ativas,
-        'completude_geral_campanhas': completude_campanhas
-    }
     return render(
         request,
         'labeler/campanhas.html',
-        contexto)
+        {'campanhas': campanhas_ativas})
 
 
 @login_required

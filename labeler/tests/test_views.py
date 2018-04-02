@@ -2,11 +2,7 @@
 import json
 import os
 from httmock import HTTMock, urlmatch
-from django.contrib.auth import get_user_model
-from django.urls import reverse
 from django.test import TestCase, Client
-
-from model_mommy.mommy import make
 
 
 os.environ['http_proxy'] = ''
@@ -62,29 +58,3 @@ class LoginTestCase(TestCase):
             )
 
         assert response.status_code == 302
-
-
-class CompletudeCampanha(TestCase):
-    """
-        Retorna as completudes das campanhas ativas no contexto.
-    """
-    def test_retorna_completude_de_uma_campanha_ativas(self):
-        User = get_user_model()
-        usuario = make(User, email='teste@exemplo.com')
-        usuario.username = 'teste'
-        usuario.set_password('12345')
-        usuario.save()
-        self.client.login(username='teste', password='12345')
-
-        campanha = make('labeler.Campanha', ativa=True)
-        tarefas = make('labeler.Tarefa', _quantity=10, campanha=campanha)
-        trabalhos = make('labeler.Trabalho', _quantity=5, tarefas=tarefas)
-
-        # Tres Respostas
-        make('labeler.Resposta', tarefa=tarefas[0], trabalho=trabalhos[0])
-
-        resp = self.client.get(reverse('campanhas'))
-
-        self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, 'labeler/campanhas.html')
-        self.assertEqual(resp.context['completude_geral_campanhas'], [10])

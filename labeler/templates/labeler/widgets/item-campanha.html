@@ -11,6 +11,8 @@
         <div class="panel-body">
             <div>
                 {{campanha.descricao|safe}}
+                {% completude_geral campanha %}
+                {{ completude_geral_campanha }}
             </div>
             <div class="progress progress-lg">
                 {% completude campanha request.user.username %}
