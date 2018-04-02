@@ -47,7 +47,7 @@ class Campanha(models.Model):
         total_tarefas = Tarefa.objects.all().distinct().count()
         numero_respostas = self.tarefa_set.filter(
             resposta__isnull=False).distinct().count()
-        return int(numero_respostas / total_tarefas * 100)
+        return round(numero_respostas / total_tarefas * 100, 2)
 
     def obter_trabalho(self, usuario):
         """Obtém o último trabalho de respostas do usuário"""
