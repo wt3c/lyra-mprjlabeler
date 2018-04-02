@@ -39,3 +39,16 @@ class Completude(TestCase):
         completude_geral = campanha.obter_completude_geral()
 
         self.assertEqual(completude_geral, 30)
+
+    def test_completude_geral_da_com_duas_respostas_para_mesma_tarefa(self):
+        campanha = make('labeler.Campanha')
+        tarefas = make('labeler.Tarefa', _quantity=10, campanha=campanha)
+        trabalhos = make('labeler.Trabalho', _quantity=5, tarefas=tarefas)
+
+        # Duas Respostas na mesma Tarefa
+        make('labeler.Resposta', tarefa=tarefas[0], trabalho=trabalhos[0])
+        make('labeler.Resposta', tarefa=tarefas[0], trabalho=trabalhos[1])
+
+        completude_geral = campanha.obter_completude_geral()
+
+        self.assertEqual(completude_geral, 10)
