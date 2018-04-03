@@ -12159,3 +12159,32 @@ ul.pro-amenities li span i{
     top: 20px;
     position: relative;
 }
+
+/* Barbier */
+.panel-heading {
+    position: relative;
+}
+
+.panel-heading--icone {
+    position: absolute;
+    height: 15px;
+    margin-top: -7px;
+    right: 20px;
+    top: 50%;
+    width: 15px;
+}
+
+.panel-heading--subtitulo {
+    display: inline;
+    font-size: 12px;
+    font-weight: normal;
+    margin-left: 15px;
+}
+
+@media (max-width:480px) {
+    .panel-heading--subtitulo {
+        display: block;
+        margin: 0;
+        width: 90%;
+    }
+}

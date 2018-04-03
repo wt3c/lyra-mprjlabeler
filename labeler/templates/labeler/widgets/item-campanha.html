@@ -3,17 +3,19 @@
     <div class="panel-heading" style="cursor:pointer;" 
          data-perform="panel-collapse">
         {{ campanha }}
-        <div class="pull-right">
+        <div class="panel-heading--icone pull-right">
             <a href="#" data-perform="panel-collapse"><i class="ti-plus"></i></a> 
         </div>
+        <p class="panel-heading--subtitulo">
+            {% completude_geral campanha %}
+            {{ completude_geral_campanha }}% do total concluído
+        </p>
     </div>
     <div class="panel-wrapper collapse" aria-expanded="true">
         <div class="panel-body">
-            <div>
-                {{campanha.descricao|safe}}
-                {% completude_geral campanha %}
-                {{ completude_geral_campanha }}
-            </div>
+            <p>
+                <strong>{{campanha.descricao|safe}}</strong>
+            </p>
             <div class="progress progress-lg">
                 {% completude campanha request.user.username %}
                 <div class="progress-bar progress-bar-success" 
