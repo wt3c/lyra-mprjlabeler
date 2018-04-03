@@ -27,9 +27,15 @@ class Command(BaseCommand):
         while arquivo:
             lista = arquivo[:100]
 
-            response = requests.post(
-                "%sapi/tarefa/%s/" % (enderecoremoto, id_campanha),
-                data=json.dumps(lista))
+            tentativas = 0
+            try:
+                response = requests.post(
+                    "%sapi/tarefa/%s/" % (enderecoremoto, id_campanha),
+                    data=json.dumps(lista))
+            except Exception as error:
+                if tentativas >= 3:
+                    raise error
+                tentativas += 1
 
             if response.status_code == 200:
                 self.stdout.write(self.style.SUCCESS('100 tarefas enviads'))
