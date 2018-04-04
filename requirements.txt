@@ -39,7 +39,6 @@ raven==6.6.0
 requests==2.18.4
 simplegeneric==0.8.1
 six==1.11.0
-sklearn==0.0
 traitlets==4.3.2
 urllib3==1.22
 wcwidth==0.1.7
