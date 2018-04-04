@@ -17,5 +17,6 @@
         "**/.git": true,
         "**/.DS_Store": true,
         "venv": true
-    }
+    },
+    "python.pythonPath": "${workspaceFolder}/venv/bin/python"
 }

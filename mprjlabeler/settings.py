@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'raven.contrib.django.raven_compat',
     'labeler',
 ]
 
@@ -131,9 +132,14 @@ LOGIN_URL = '/login/'
 
 #STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+RAVEN_CONFIG = {
+    'dsn': os.environ["RAVENURL"],
+}
+
 if "AMBIENTE" in os.environ and os.environ["AMBIENTE"] == "producao":
     # Parametros para rodar no heroku
     DATABASES = {
         'default': dj_database_url.config()
     }
     DEBUG = False
+

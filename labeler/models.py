@@ -1,7 +1,7 @@
 "Domínio de Dados"
 from django.db import models
 from yamlfield.fields import YAMLField
-from sklearn.model_selection import train_test_split
+import random
 
 
 class CampanhaManager(models.Manager):
@@ -78,10 +78,10 @@ Cria um job de tarefa para um usuário caso ele não exista. """
 
             # Caso não tenha trabalho ativo,
             # cria um set de trabalho automaticamente
-            ids_tarefas = self.tarefa_set.values_list('id', flat=True)
-            tarefas_trabalho = train_test_split(
-                list(ids_tarefas),
-                test_size=self.tarefas_por_trabalho)[1]
+            ids_tarefas = [id for id in [self.tarefa_set.values_list(
+                'id', flat=True)]]
+            random.shuffle(ids_tarefas)
+            tarefas_trabalho = ids_tarefas[:self.tarefas_por_trabalho]
 
             tarefas = Tarefa.objects.filter(id__in=tarefas_trabalho)
 
