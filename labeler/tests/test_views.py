@@ -4,6 +4,7 @@ import os
 from httmock import HTTMock, urlmatch
 from django.test import TestCase, Client
 
+
 os.environ['http_proxy'] = ''
 
 

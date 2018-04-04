@@ -43,6 +43,12 @@ class Campanha(models.Model):
             (self._quantidade_tarefas_respondidas(usuario)*100)
             / self.tarefas_por_trabalho)
 
+    def obter_completude_geral(self):
+        total_tarefas = Tarefa.objects.all().distinct().count()
+        numero_respostas = self.tarefa_set.filter(
+            resposta__isnull=False).distinct().count()
+        return round(numero_respostas / total_tarefas * 100, 2)
+
     def obter_trabalho(self, usuario):
         """Obtém o último trabalho de respostas do usuário"""
         return Trabalho.objects.filter(
