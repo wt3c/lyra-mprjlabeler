@@ -10,3 +10,9 @@ def completude(context, campanha, username):
     armazena na variável de template "porcentagem" """
     context['porcentagem'] = campanha.completude(username)
     return ''
+
+
+@register.simple_tag(takes_context=True)
+def completude_geral(context, campanha):
+    context['completude_geral_campanha'] = campanha.obter_completude_geral()
+    return ''
