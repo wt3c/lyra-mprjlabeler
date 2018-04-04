@@ -3,6 +3,16 @@ import json
 import requests
 from django.core.management.base import BaseCommand
 
+from multiprocessing import Pool
+
+ID_CAMPANHA = None
+ENDERECOREMOTO = None
+STDOUT = None
+STYLE = None
+
+QUANTIDADE_TAREFAS = 50
+QUANTIDADE_THREADS = 12
+
 
 class Command(BaseCommand):
     "Envia tarefas para um servidor remoto, de 1000 em 1000"
@@ -17,30 +27,56 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         "Executa o envio de tarefas"
+        global ID_CAMPANHA, ENDERECOREMOTO, STDOUT, STYLE, QUANTIDADE_THREADS
         del args
-        id_campanha = options['id_campanha'][0]
+        ID_CAMPANHA = options['id_campanha'][0]
         arquivo = options['arquivo'][0]
-        enderecoremoto = options['enderecoremoto'][0]
+        ENDERECOREMOTO = options['enderecoremoto'][0]
+        STDOUT = self.stdout
+        STYLE = self.style
 
         arquivo = json.load(open(arquivo))
 
+        novo = []
         while arquivo:
-            lista = arquivo[:100]
+            novo += [pop(arquivo, QUANTIDADE_TAREFAS)]
+        arquivo = novo
 
-            tentativas = 0
-            try:
-                response = requests.post(
-                    "%sapi/tarefa/%s/" % (enderecoremoto, id_campanha),
-                    data=json.dumps(lista))
-            except Exception as error:
-                if tentativas >= 3:
-                    raise error
-                tentativas += 1
+        pool = Pool(QUANTIDADE_THREADS)
+        pool.map(envia, arquivo)
 
-            if response.status_code == 200:
-                self.stdout.write(self.style.SUCCESS('100 tarefas enviads'))
-            else:
-                self.stdout.write(self.style.ERROR(response.content))
-                return
 
-            del arquivo[:100]
+def pop(lista, qtd):
+    temp = lista[:qtd]
+    del lista[:qtd]
+    return temp
+
+
+def envia(lista):
+    global ID_CAMPANHA, ENDERECOREMOTO, STDOUT, STYLE, QUANTIDADE_TAREFAS
+    tentativas = 0
+    response = None
+    while True:
+        STDOUT.write(STYLE.SUCCESS('Comecei!'))
+        try:
+            response = requests.post(
+                "%sapi/tarefa/%s/" % (ENDERECOREMOTO, ID_CAMPANHA),
+                data=json.dumps(lista))
+            STDOUT.write(STYLE.SUCCESS('Enviei'))
+            break
+        except Exception as error:
+            if tentativas > 3:
+                STDOUT.write(STYLE.ERROR(
+                    "Desisti"))
+                break
+            STDOUT.write(STYLE.ERROR(
+                "Deu ruim - %s" % tentativas))
+            tentativas += 1
+
+    if response and response.status_code == 200:
+        STDOUT.write(STYLE.SUCCESS('%s tarefas enviads' % QUANTIDADE_TAREFAS))
+    else:
+        if response:
+            STDOUT.write(STYLE.ERROR(response.content))
+        else:
+            STDOUT.write(STYLE.ERROR("Quebrou geral"))
