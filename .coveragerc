@@ -6,4 +6,8 @@ omit =
     /usr/*
     */site-packages/*
     manage.py
+    mprjlabeler/settings.py
+    mprjlabeler/test_settings.py
+    venvtest/*
+    venv/*
 
