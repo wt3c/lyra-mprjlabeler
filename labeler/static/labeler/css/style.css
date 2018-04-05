@@ -12181,6 +12181,10 @@ ul.pro-amenities li span i{
     margin-left: 15px;
 }
 
+.remove-dots ul {
+    list-style: none;
+}
+
 @media (max-width:480px) {
     .panel-heading--subtitulo {
         display: block;
