@@ -13,7 +13,7 @@ class Autenticador:
         del request
         password = bytes(password, 'utf-8')
         session = requests.session()
-        import ipdb; ipdb.set_trace()
+
         response = session.post(
             url=settings.AUTH_MPRJ,
             data={
@@ -29,7 +29,8 @@ class Autenticador:
                 user = User(username=username)
                 user.is_staff = False
                 user.is_superuser = False
-                user.first_name = ' '.join(corpo['userDetails']['nome'].split()[:2])[:30]
+                user.first_name = ' '.join(
+                    corpo['userDetails']['nome'].split()[:2])[:30]
                 user.save()
             return user
         return None
