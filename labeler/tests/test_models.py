@@ -1,6 +1,8 @@
 from django.test import TestCase
 
 from model_mommy.mommy import generators, make
+from django.contrib.auth.models import User
+from labeler.models import Trabalho
 
 
 # Adiciona Field nao suportado pela biblioteca model_mommy
@@ -65,3 +67,29 @@ class Completude(TestCase):
         completude_geral = campanha.obter_completude_geral()
 
         self.assertEqual(completude_geral, 66.67)
+
+
+class AlocacaoTarefa(TestCase):
+    def setUp(self):
+        self.usuario = make(
+            User,
+            username='usuarioteste')
+
+    def test_obtencao_quantidade_tarefas(self):
+        campanha = make(
+            'labeler.Campanha',
+            nome='Nova Campanha',
+            tarefas_por_trabalho=2)
+        make('labeler.Tarefa', _quantity=4, campanha=campanha)
+
+        tarefas = campanha.obter_tarefa(self.usuario.username)
+
+        self.assertFalse(tarefas is None)
+        self.assertEqual(
+            len(Trabalho.objects.filter(
+                username=self.usuario.username)),
+            1)
+        self.assertEqual(
+            len(Trabalho.objects.filter(
+                username=self.usuario.username).first().tarefas.all()),
+            2)
