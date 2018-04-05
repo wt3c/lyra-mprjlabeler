@@ -78,8 +78,8 @@ Cria um job de tarefa para um usuário caso ele não exista. """
 
             # Caso não tenha trabalho ativo,
             # cria um set de trabalho automaticamente
-            ids_tarefas = [id for id in [self.tarefa_set.values_list(
-                'id', flat=True)]]
+            ids_tarefas = [id for id in self.tarefa_set.values_list(
+                'id', flat=True)]
             random.shuffle(ids_tarefas)
             tarefas_trabalho = ids_tarefas[:self.tarefas_por_trabalho]
 
