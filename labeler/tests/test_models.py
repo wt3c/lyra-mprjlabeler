@@ -84,7 +84,7 @@ class AlocacaoTarefa(TestCase):
 
         tarefas = campanha.obter_tarefa(self.usuario.username)
 
-        self.assertFalse(tarefas is None)
+        self.assertIsNotNone(tarefas)
         self.assertEqual(
             len(Trabalho.objects.filter(
                 username=self.usuario.username)),
@@ -104,3 +104,40 @@ class AlocacaoTarefa(TestCase):
         tarefas = campanha._obter_tarefas_alocaveis()
 
         self.assertEqual(len(tarefas), 2)
+
+    def test_trabalho_ativo_existente(self):
+        campanha = make(
+            'labeler.Campanha',
+            nome='Nova Campanha',
+            tarefas_por_trabalho=2)
+        tarefas = make('labeler.Tarefa', _quantity=4, campanha=campanha)
+
+        make(
+            'labeler.Trabalho',
+            tarefas=tarefas,
+            username=self.usuario.username,
+            situacao='A')
+
+        trabalho = campanha._obter_trabalho_ativo(
+            self.usuario.username,
+            gerar_novo_trabalho=False)
+
+        self.assertIsNotNone(trabalho)
+
+    # def test_trabalho_fechado_existente(self):
+    #     campanha = make(
+    #         'labeler.Campanha',
+    #         nome='Nova Campanha',
+    #         tarefas_por_trabalho=2)
+    #     tarefas = make('labeler.Tarefa', _quantity=4, campanha=campanha)
+
+    #     make(
+    #         'labeler.Trabalho',
+    #         tarefas=tarefas,
+    #         username=self.usuario.username,
+    #         situacao='F')
+
+    #     trabalho = campanha._obter_trabalho_ativo(self.usuario.username,
+    # gerar_novo_trabalho=False)
+
+    #     self.assertIsNone(trabalho)

@@ -63,7 +63,10 @@ class Campanha(models.Model):
 
         return Tarefa.objects.filter(id__in=tarefas_trabalho)
 
-    def _obter_trabalho_ativo(self, usuario, gerar_novo_trabalho):
+    def obter_tarefa(self, usuario, gerar_novo_trabalho=False):
+        """Obtem uma tarefa para uma campanha ativa.
+Retorna nulo para campanhas com tarefas completas.
+Cria um job de tarefa para um usuário caso ele não exista. """
         trabalho_ativo = self.obter_trabalho(usuario)
 
         # se a situacao do trabalho for inativa não retorna tarefa nenhuma
@@ -78,16 +81,6 @@ class Campanha(models.Model):
                 trabalho_ativo.situacao == 'F' and
                 gerar_novo_trabalho):
             trabalho_ativo = None
-
-        return trabalho_ativo
-
-    def obter_tarefa(self, usuario, gerar_novo_trabalho=False):
-        """Obtem uma tarefa para uma campanha ativa.
-Retorna nulo para campanhas com tarefas completas.
-Cria um job de tarefa para um usuário caso ele não exista. """
-        trabalho_ativo = self._obter_trabalho_ativo(
-            usuario,
-            gerar_novo_trabalho)
 
         if not trabalho_ativo:
 
@@ -104,7 +97,10 @@ Cria um job de tarefa para um usuário caso ele não exista. """
             trabalho_ativo.tarefas.set(tarefas)
 
         ids_tarefas_realizadas = trabalho_ativo.tarefas.filter(
-            resposta__username=usuario).values_list('id', flat=True)
+            resposta__username=usuario,
+            resposta__trabalho__id=trabalho_ativo.id).values_list(
+                'id',
+                flat=True)
 
         tarefa = trabalho_ativo.tarefas.exclude(
             id__in=ids_tarefas_realizadas).first()
