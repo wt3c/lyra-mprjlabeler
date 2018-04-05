@@ -93,3 +93,14 @@ class AlocacaoTarefa(TestCase):
             len(Trabalho.objects.filter(
                 username=self.usuario.username).first().tarefas.all()),
             2)
+
+    def test_obter_tarefas_alocaveis(self):
+        campanha = make(
+            'labeler.Campanha',
+            nome='Nova Campanha',
+            tarefas_por_trabalho=2)
+        make('labeler.Tarefa', _quantity=4, campanha=campanha)
+
+        tarefas = campanha._obter_tarefas_alocaveis()
+
+        self.assertEqual(len(tarefas), 2)

@@ -55,10 +55,15 @@ class Campanha(models.Model):
             tarefas__campanha__id=self.id,
             username=usuario).order_by('-id').first()
 
-    def obter_tarefa(self, usuario, gerar_novo_trabalho=False):
-        """Obtem uma tarefa para uma campanha ativa.
-Retorna nulo para campanhas com tarefas completas.
-Cria um job de tarefa para um usuário caso ele não exista. """
+    def _obter_tarefas_alocaveis(self):
+        ids_tarefas = [id for id in self.tarefa_set.values_list(
+                'id', flat=True)]
+        random.shuffle(ids_tarefas)
+        tarefas_trabalho = ids_tarefas[:self.tarefas_por_trabalho]
+
+        return Tarefa.objects.filter(id__in=tarefas_trabalho)
+
+    def _obter_trabalho_ativo(self, usuario, gerar_novo_trabalho):
         trabalho_ativo = self.obter_trabalho(usuario)
 
         # se a situacao do trabalho for inativa não retorna tarefa nenhuma
@@ -74,16 +79,22 @@ Cria um job de tarefa para um usuário caso ele não exista. """
                 gerar_novo_trabalho):
             trabalho_ativo = None
 
+        return trabalho_ativo
+
+    def obter_tarefa(self, usuario, gerar_novo_trabalho=False):
+        """Obtem uma tarefa para uma campanha ativa.
+Retorna nulo para campanhas com tarefas completas.
+Cria um job de tarefa para um usuário caso ele não exista. """
+        trabalho_ativo = self._obter_trabalho_ativo(
+            usuario,
+            gerar_novo_trabalho)
+
         if not trabalho_ativo:
 
             # Caso não tenha trabalho ativo,
             # cria um set de trabalho automaticamente
-            ids_tarefas = [id for id in self.tarefa_set.values_list(
-                'id', flat=True)]
-            random.shuffle(ids_tarefas)
-            tarefas_trabalho = ids_tarefas[:self.tarefas_por_trabalho]
 
-            tarefas = Tarefa.objects.filter(id__in=tarefas_trabalho)
+            tarefas = self._obter_tarefas_alocaveis()
 
             trabalho_ativo = Trabalho(
                 username=usuario,
