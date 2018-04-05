@@ -6,17 +6,20 @@
         ".vscode/*.py",
         "**/site-packages/**/*.py",
         "**/migrations/**/*.py",
-        "venv"
+        "venv",
+        "venvtest"
     ],
     "python.venvFolders": [
         "envs",
+        "venvtest",
         ".pyenv",
         ".direnv"
       ],
     "files.exclude": {
         "**/.git": true,
         "**/.DS_Store": true,
-        "venv": true
+        "venv": true,
+        "venvtest": true
     },
-    "python.pythonPath": "${workspaceFolder}/venv/bin/python"
+    "python.pythonPath": "${workspaceFolder}/venvtest/bin/python"
 }
