@@ -185,6 +185,7 @@ SITUACOES_TRABALHO = (
 class Trabalho(models.Model):
     "Grupo de tarefas por campanha alocadas para um usuário classificar"
     tarefas = models.ManyToManyField('Tarefa')
+    campanha = models.ForeignKey('Campanha', on_delete=models.CASCADE)
     username = models.TextField(max_length=255)
     situacao = models.CharField(
         max_length=1,
