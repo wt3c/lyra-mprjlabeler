@@ -104,3 +104,47 @@ class AlocacaoTarefa(TestCase):
         tarefas = campanha._obter_tarefas_alocaveis()
 
         self.assertEqual(len(tarefas), 2)
+
+class HistoricoCompletude(TestCase):
+    def setUp(self):
+        self.campanha = make('labeler.Campanha')
+        self.usuario = make(User, username='usuarioteste')
+        self.tarefas = make('labeler.Tarefa', _quantity=3)
+        self.trabalho = make(
+            'labeler.Trabalho',
+            tarefas=self.tarefas,
+            username=self.usuario.username,
+            campanha=self.campanha
+        )
+
+    def test_obter_completude_de_um_trabalho(self):
+        make('labeler.Resposta',
+             tarefa=self.tarefas[0],
+             trabalho=self.trabalho,
+             username=self.usuario.username
+        )
+        make('labeler.Resposta',
+             tarefa=self.tarefas[1],
+             trabalho=self.trabalho,
+             username=self.usuario.username
+        )
+
+        completude = self.trabalho.obter_completude()
+
+        self.assertEqual(completude, 66)
+
+    def test_obter_todos_trabalhos_de_um_usuario_dado_um_usuario(self):
+        outro_usuario = make(User)
+        outro_trabalho = make('labeler.Trabalho',
+                              username=self.usuario.username,
+                              campanha=self.campanha)
+
+        trabalho_outro_usuario = make('labeler.Trabalho',
+                                      username=outro_usuario.username,
+                                      campanha=self.campanha)
+        trabalhos_usuario = self.campanha.obter_todos_trabalhos(self.usuario.username)
+
+        self.assertEqual(Trabalho.objects.count(), 3)
+        self.assertEqual(len(trabalhos_usuario), 2)
+        self.assertEqual(trabalhos_usuario[0].username, self.usuario.username)
+        self.assertEqual(trabalhos_usuario[1].username, self.usuario.username)

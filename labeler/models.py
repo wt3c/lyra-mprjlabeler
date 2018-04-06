@@ -55,6 +55,9 @@ class Campanha(models.Model):
             tarefas__campanha__id=self.id,
             username=usuario).order_by('-id').first()
 
+    def obter_todos_trabalhos(self, nome_usuario):
+        return self.trabalho_set.filter(username=nome_usuario)
+
     def _obter_tarefas_alocaveis(self):
         ids_tarefas = [id for id in self.tarefa_set.values_list(
                 'id', flat=True)]
@@ -191,6 +194,19 @@ class Trabalho(models.Model):
         max_length=1,
         choices=SITUACOES_TRABALHO,
         default='A')
+
+    def obter_completude(self):
+        ids_tarefas = self.tarefas.values_list('id', flat=True)
+        ids_tarefas_respondidas = Resposta.objects.filter(
+            tarefa__id__in=ids_tarefas,
+            username=self.username,
+            trabalho__id=self.id).values_list('tarefa_id', flat=True)
+        quantidade_tarefas_respondidas = self.tarefas.filter(
+            id__in=ids_tarefas_respondidas).count()
+
+
+        return int(quantidade_tarefas_respondidas /
+                   self.campanha.tarefas_por_trabalho * 100)
 
 
 class Resposta(models.Model):

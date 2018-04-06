@@ -16,12 +16,21 @@
             <p>
                 <strong>{{campanha.descricao|safe}}</strong>
             </p>
+			{% completude_dos_trabalhos campanha request.user.username %}
+			{% for percent in porcentagens_trabalhos %}
             <div class="progress progress-lg">
-                {% completude campanha request.user.username %}
-                <div class="progress-bar progress-bar-success" 
-                        style="width: {{porcentagem}}%;"
-                        role="progressbar">{{porcentagem}}%</div>
+				{% if percent == 100 %}
+					<div class="progress-bar progress-bar-success" 
+                        style="width: {{percent}}%;"
+                        role="progressbar">{{percent}}%</div>
+				{% else %}
+					<div class="progress-bar progress-bar-warning" 
+                        style="width: {{percent}}%;"
+                        role="progressbar">{{percent}}%</div>
+				{% endif %}
+
             </div>
+			{% endfor %}
             <div>
                 {% if porcentagem != 100%}
                 <div class="col-lg-2 col-sm-4 col-xs-12">
