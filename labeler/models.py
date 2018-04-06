@@ -94,6 +94,7 @@ Cria um job de tarefa para um usuário caso ele não exista. """
 
             trabalho_ativo = Trabalho(
                 username=usuario,
+                campanha=self,
                 situacao='A'
             )
             trabalho_ativo.save()
