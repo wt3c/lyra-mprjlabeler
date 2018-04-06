@@ -11,4 +11,5 @@ after_success:
   - codecov 
 notifications:
   email:
+    - rhenan.ferreira@mprj.mp.br
     - felipe.gomes.ferreira@gmail.com
