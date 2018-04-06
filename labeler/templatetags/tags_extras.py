@@ -26,6 +26,6 @@ def completude_dos_trabalhos(context, campanha, nome_usuario):
         return ''
 
     context['porcentagens_trabalhos'] = [
-	trabalho.obter_completude() for trabalho in trabalhos
+        trabalho.obter_completude() for trabalho in trabalhos
     ]
     return ''

@@ -205,7 +205,6 @@ class Trabalho(models.Model):
         quantidade_tarefas_respondidas = self.tarefas.filter(
             id__in=ids_tarefas_respondidas).count()
 
-
         return int(quantidade_tarefas_respondidas /
                    self.campanha.tarefas_por_trabalho * 100)
 
