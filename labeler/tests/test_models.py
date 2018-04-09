@@ -108,7 +108,7 @@ class AlocacaoTarefa(TestCase):
 
 class HistoricoCompletude(TestCase):
     def setUp(self):
-        self.campanha = make('labeler.Campanha')
+        self.campanha = make('labeler.Campanha', tarefas_por_trabalho=3)
         self.usuario = make(User, username='usuarioteste')
         self.tarefas = make('labeler.Tarefa', _quantity=3)
         self.trabalho = make(
