@@ -85,6 +85,7 @@ class AlocacaoTarefa(TestCase):
         tarefas = campanha.obter_tarefa(self.usuario.username)
 
         self.assertIsNotNone(tarefas)
+        self.assertTrue(hasattr(tarefas, 'numero_documento'))
         self.assertEqual(
             len(Trabalho.objects.filter(
                 username=self.usuario.username)),
