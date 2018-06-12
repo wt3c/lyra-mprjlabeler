@@ -4,6 +4,25 @@ from yamlfield.fields import YAMLField
 import random
 
 
+def _formata_numero_documento(numero_processo):
+    mascara = "{0}-{1}.{2}.{3}.{4}.{5}"
+    primeira_parte = slice(0, 7)
+    segunda_parte = slice(7, 9)
+    terceira_parte = slice(9, 13)
+    quarta_parte = slice(13, 14)
+    quinta_parte = slice(14, 16)
+    sexta_parte = slice(16, 20)
+
+    return mascara.format(
+        numero_processo[primeira_parte],
+        numero_processo[segunda_parte],
+        numero_processo[terceira_parte],
+        numero_processo[quarta_parte],
+        numero_processo[quinta_parte],
+        numero_processo[sexta_parte]
+    )
+
+
 class CampanhaManager(models.Manager):
     "Manager para métodos de negócio de Campanha"
     def listar_campanhas(self):
@@ -150,6 +169,7 @@ class Tarefa(models.Model):
     texto_inteligencia = models.TextField()
     classificacao = models.CharField(max_length=500)
     campanha = models.ForeignKey('Campanha', on_delete=models.DO_NOTHING)
+    numero_documento = models.CharField(max_length=255, default='')
 
     def votar(self, username, respostas):
         "computa mais um voto para o usuario nesta tarefa"
@@ -173,6 +193,9 @@ class Tarefa(models.Model):
             tarefa.campanha = campanha
             tarefa.texto_original = item['original']
             tarefa.texto_inteligencia = item['parseado']
+            tarefa.numero_documento = _formata_numero_documento(
+                item['numero_documento']
+            )
             tarefa.save()
 
 
