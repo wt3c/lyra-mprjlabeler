@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'raven.contrib.django.raven_compat',
     'labeler',
+    'filtro',
 ]
 
 MIDDLEWARE = [
@@ -136,4 +137,3 @@ RAVEN_CONFIG = {
 if "AMBIENTE" in os.environ and os.environ["AMBIENTE"] == "producao":
     # Parametros para rodar no heroku
     DEBUG = False
-
