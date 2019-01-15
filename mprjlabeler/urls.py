@@ -19,8 +19,9 @@ from django.views.generic.base import RedirectView
 from django.contrib.auth.views import logout
 from django.conf.urls.static import static
 from django.conf import settings
-from labeler.views import campanhas, campanha, login
+from labeler.views import campanhas, campanha, login, index
 from labeler.api import tarefa
+from filtro.views import filtros
 
 
 urlpatterns = [
@@ -34,10 +35,7 @@ urlpatterns = [
          {'pedirnovo': True},
          name='nova_campanha'),
     path('login/', login, name='login'),
-    path('', RedirectView.as_view(
-        url='campanhas/',
-        permanent=True),
-         name='index'),
+    path('', index, name='index'),
     path('logout/',
          logout,
          {'next_page': '/'},
@@ -45,4 +43,9 @@ urlpatterns = [
     path('api/tarefa/<int:idcampanha>/',
          tarefa,
          name='api_tarefa'),
+    path(
+        'filtros/',
+        filtros,
+        name='filtros'
+    ),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

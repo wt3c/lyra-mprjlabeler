@@ -1,0 +1,40 @@
+{% extends 'labeler/index.html' %}
+{% load tags_extras %}
+{% block 'content' %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">Filtros de Documentos</div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Situação</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in filtros %}
+                                <tr>
+                                    <td>{{item.nome}}</td>
+                                    <td>{{item.get_situacao_display}}</td>
+                                    <td class="text-nowrap">        
+                                        <a href="#" data-toggle="tooltip" data-original-title="Editar"><i class="fa fa-pencil text-inverse m-r-10"></i></a>
+                                        <a href="#" data-toggle="tooltip" data-original-title="Excluir"><i class="fa fa-close text-danger m-r-10"></i></a>
+                                        <a href="#" data-toggle="tooltip" data-original-title="Executar Filtro"> <i class="fa fa-bolt text-success m-r-10"></i> </a>
+                                        <a href="#" data-toggle="tooltip" data-original-title="Baixar Resultados"> <i class="fa fa-download text-warning m-r-10"></i></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
