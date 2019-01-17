@@ -21,7 +21,11 @@ from django.conf.urls.static import static
 from django.conf import settings
 from labeler.views import campanhas, campanha, login, index
 from labeler.api import tarefa
-from filtro.views import filtros
+from filtro.views import (
+    filtros,
+    adicionar_filtro,
+    filtro
+)
 
 
 urlpatterns = [
@@ -48,4 +52,14 @@ urlpatterns = [
         filtros,
         name='filtros'
     ),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    path(
+        'filtros/adicionar',
+        adicionar_filtro,
+        name='filtros-adicionar'
+    ),
+    path(
+        'filtros/<int:idfiltro>',
+        filtro,
+        name='filtros-filtro'
+    ),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

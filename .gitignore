@@ -22,6 +22,7 @@ media
 # <django-project-name>/staticfiles/
 
 /static/
+/media/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

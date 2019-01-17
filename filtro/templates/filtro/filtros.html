@@ -6,6 +6,14 @@
         <div class="panel panel-info">
             <div class="panel-heading">Filtros de Documentos</div>
             <div class="panel-body">
+                <div class="button-box">
+                    <button 
+                        class="fcbtn btn btn-success btn-outline btn-1d"
+                        data-toggle="modal"
+                        data-target="#adicionarModal">
+                        <i class="fa fa-plus text-inverse m-r-10"></i>Adicionar Filtro
+                    </button>
+                </div>
                 <div class="table-responsive">
                     <div class="table-responsive">
                         <table class="table">
@@ -22,7 +30,7 @@
                                     <td>{{item.nome}}</td>
                                     <td>{{item.get_situacao_display}}</td>
                                     <td class="text-nowrap">        
-                                        <a href="#" data-toggle="tooltip" data-original-title="Editar"><i class="fa fa-pencil text-inverse m-r-10"></i></a>
+                                        <a href="{% url 'filtros-filtro' item.id %}" data-toggle="tooltip" data-original-title="Editar"><i class="fa fa-pencil text-inverse m-r-10"></i></a>
                                         <a href="#" data-toggle="tooltip" data-original-title="Excluir"><i class="fa fa-close text-danger m-r-10"></i></a>
                                         <a href="#" data-toggle="tooltip" data-original-title="Executar Filtro"> <i class="fa fa-bolt text-success m-r-10"></i> </a>
                                         <a href="#" data-toggle="tooltip" data-original-title="Baixar Resultados"> <i class="fa fa-download text-warning m-r-10"></i></a>
@@ -34,6 +42,29 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="adicionarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" style="display: none;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="exampleModalLabel1">Novo Filtro</h4> 
+            </div>
+            <form method='POST' action={% url 'filtros-adicionar' %}>
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="recipient-name" class="control-label">Nome:</label>
+                        {{novofiltroform.nome}}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
