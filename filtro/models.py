@@ -34,6 +34,7 @@ class Filtro(models.Model):
     arquivo_documentos = models.FileField(null=True, blank=True)
     situacao = models.CharField(max_length=1, choices=SITUACOES_FILTRO, default='1')
     saida = models.FileField(null=True, blank=True)
+    responsavel = models.CharField(max_length=50, default='')
 
     def __str__(self):
         if self:

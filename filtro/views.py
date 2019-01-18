@@ -1,9 +1,27 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import (
+    render,
+    redirect,
+    get_object_or_404,
+    get_list_or_404
+)
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from .forms import AdicionarFiltroForm, FiltroForm
 from .models import Filtro
+
+
+def obter_filtro(idfiltro, username):
+    return get_object_or_404(
+        Filtro,
+        pk=idfiltro,
+        responsavel=username)
+
+
+def obter_filtros(username):
+    return Filtro.objects.filter(
+        responsavel=username
+    )
 
 
 @login_required
@@ -14,7 +32,7 @@ def filtros(request):
         request,
         'filtro/filtros.html',
         {
-            'filtros': Filtro.objects.all(),
+            'filtros': obter_filtros(request.user.username),
             'novofiltroform': novo_filtro_form
         }
     )
@@ -37,7 +55,7 @@ def adicionar_filtro(request):
 
 @login_required
 def filtro(request, idfiltro):
-    m_filtro = Filtro.objects.get(pk=idfiltro)
+    m_filtro = obter_filtro(idfiltro, request.user.username)
     form = FiltroForm(instance=m_filtro)
 
     if request.method == 'POST':
