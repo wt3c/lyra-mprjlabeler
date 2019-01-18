@@ -1,5 +1,8 @@
 from django import forms
-from .models import Filtro
+from .models import (
+    Filtro,
+    ClasseFiltro
+)
 
 
 class BaseModelForm(forms.ModelForm):
@@ -26,3 +29,9 @@ class FiltroForm(BaseModelForm):
     class Meta:
         model = Filtro
         fields = ['nome', 'tipos_movimento', 'arquivo_documentos']
+
+
+class AdicionarClasseForm(BaseModelForm):
+    class Meta:
+        model = ClasseFiltro
+        fields = ['nome']

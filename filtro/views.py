@@ -8,8 +8,10 @@ from django.shortcuts import (
 )
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
-from .forms import AdicionarFiltroForm, FiltroForm
-from .models import Filtro
+from .forms import AdicionarFiltroForm, FiltroForm, AdicionarClasseForm
+from .models import (
+    Filtro,
+)
 
 
 def obter_filtro(idfiltro, username):
@@ -74,6 +76,8 @@ def filtro(request, idfiltro):
         {
             'form': form,
             'model': m_filtro,
+            'idfiltro': idfiltro,
+            'adicionarclasseform': AdicionarClasseForm()
         }
     )
 
@@ -83,12 +87,32 @@ def filtro(request, idfiltro):
 def excuir_filtro(request):
     idfiltro = request.POST.get('idfiltro')
 
-    m_fitlro = obter_filtro(idfiltro, request.user.username)
-    m_fitlro.delete()
+    m_filtro = obter_filtro(idfiltro, request.user.username)
+    m_filtro.delete()
 
     messages.success(request, 'Filtro removido com Sucesso!')
     return redirect(
         reverse(
             'filtros'
+        )
+    )
+
+
+@login_required
+@require_http_methods(['POST'])
+def adicionar_classe(request, idfiltro):
+    m_adicionar = AdicionarClasseForm(request.POST)
+    m_filtro = obter_filtro(idfiltro, request.user.username)
+
+    m_adicionar.instance.filtro = m_filtro
+    m_adicionar.instance.ordem = len(m_filtro.classefiltro_set.all())
+    m_adicionar.save()
+    
+    messages.success(request, 'Classe de Filtro adicionada!')
+
+    return redirect(
+        reverse(
+            'filtros-filtro',
+            args=[idfiltro]
         )
     )

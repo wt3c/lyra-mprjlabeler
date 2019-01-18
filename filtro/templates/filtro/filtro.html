@@ -53,10 +53,20 @@
                     </div>
                 </div>
                 <div class="text-right">
+                    
                     <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Salvar</button>
                     <a  href="{% url 'filtros' %}" class="btn btn-inverse waves-effect waves-light">Voltar</a>
                 </div>
             </form>
+            <div>
+                <button type="button" 
+                class="btn btn-success waves-effect waves-light m-r-10"
+                data-toggle="modal"
+                data-target="#adicionarClasseModal"> 
+                    <i class="fa fa-plus m-r-10"></i>
+                    Adicionar Classe de Filtro
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -64,10 +74,21 @@
 <!-- classes -->
 <div class="row">
     <div class="col-md-12">
-        <div class="white-box">
+        <div class="panel panel-info">
             <div class="panel-heading"><i class="ti-settings"></i> Classes de Filtros</div>
-            <div class="panel-body">
-                
+            <div class="white-box user-table">
+                {% for classe in model.classefiltro_set.all %}
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3 class="box-title">{{classe.nome}}</h3>
+                    </div>
+                    <div class="col-sm-6" style='text-align: right;'>
+                        <i class="fa fa-up text-info m-r-10"></i>
+                        <i class="fa fa-down text-info m-r-10"></i>
+                        <i class="fa fa-trash text-danger m-r-10"></i>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -76,5 +97,8 @@
 
 <!-- Help Arquivo Modal-->
 {%include 'filtro/componentes/modal_helparquivo.html' %}
+
+<!-- Adicionar Classe Modal-->
+{%include 'filtro/componentes/modal_adicionarclasse.html' %}
 
 {% endblock %}

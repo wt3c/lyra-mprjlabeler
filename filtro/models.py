@@ -1,4 +1,5 @@
 from django.db import models
+from ordered_model.models import OrderedModel
 
 
 SITUACOES_FILTRO = (
@@ -41,10 +42,12 @@ class Filtro(models.Model):
             return self.nome
 
 
-class ClasseFiltro(models.Model):
+class ClasseFiltro(OrderedModel):
     filtro = models.ForeignKey('Filtro', on_delete=models.CASCADE)
     nome = models.CharField(max_length=50)
-    ordem = models.IntegerField()
+    
+    class Meta(OrderedModel.Meta):
+        pass
 
 
 class ItemFiltro(models.Model):
