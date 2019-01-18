@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import (
     render,
@@ -42,8 +43,11 @@ def filtros(request):
 @require_http_methods(['POST'])
 def adicionar_filtro(request):
     form = AdicionarFiltroForm(request.POST)
+    form.instance.responsavel = request.user.username
 
     form.save()
+
+    messages.success(request, "Filtro %s adicionado e salvo" % form.instance.nome)
 
     return redirect(
         reverse(
@@ -69,4 +73,20 @@ def filtro(request, idfiltro):
             'form': form,
             'model': m_filtro,
         }
+    )
+
+
+@login_required
+@require_http_methods(['POST'])
+def excuir_filtro(request):
+    idfiltro = request.POST.get('idfiltro')
+
+    m_fitlro = obter_filtro(idfiltro, request.user.username)
+    m_fitlro.delete()
+
+    messages.success(request, 'Filtro removido com Sucesso!')
+    return redirect(
+        reverse(
+            'filtros'
+        )
     )

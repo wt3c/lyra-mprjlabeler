@@ -24,7 +24,8 @@ from labeler.api import tarefa
 from filtro.views import (
     filtros,
     adicionar_filtro,
-    filtro
+    filtro,
+    excuir_filtro
 )
 
 
@@ -62,4 +63,5 @@ urlpatterns = [
         filtro,
         name='filtros-filtro'
     ),
+    path('filtros/excluir', excuir_filtro, name='filtros-excluir'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
