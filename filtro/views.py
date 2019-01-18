@@ -66,6 +66,8 @@ def filtro(request, idfiltro):
         form = FiltroForm(request.POST, request.FILES, instance=m_filtro)
         form.save()
 
+        messages.success(request, "Filtro salvo!")
+
     return render(
         request,
         'filtro/filtro.html',
