@@ -1,7 +1,8 @@
 from django import forms
 from .models import (
     Filtro,
-    ClasseFiltro
+    ClasseFiltro,
+    ItemFiltro
 )
 
 
@@ -13,7 +14,7 @@ class BaseModelForm(forms.ModelForm):
             field = self.fields[key]
             if type(field.widget) == forms.TextInput:
                 field.widget.attrs['class'] = 'form-control'
-            elif type(field.widget) == forms.SelectMultiple:
+            elif type(field.widget) == forms.SelectMultiple or type(field.widget) == forms.Select:
                 field.widget.attrs['class'] = 'selectpicker form-control'
                 field.widget.attrs['data-style'] = 'form-control'
                 field.widget.attrs['title'] = 'Selecione as Opções Desejadas'
@@ -42,3 +43,23 @@ class AdicionarClasseForm(BaseModelForm):
     class Meta:
         model = ClasseFiltro
         fields = ['nome']
+
+
+class ItemFiltroForm(BaseModelForm):
+    prefix = 'itemfiltro'
+    idclasse = forms.CharField(
+        required = False,
+        widget=forms.widgets.HiddenInput()
+    )
+    idfiltro = forms.CharField(
+        required = False,
+        widget=forms.widgets.HiddenInput()
+    )
+    iditemfiltro = forms.CharField(
+        required = False,
+        widget=forms.widgets.HiddenInput()
+    )
+
+    class Meta:
+        model = ItemFiltro
+        fields = ['termos', 'tipo', 'regex']

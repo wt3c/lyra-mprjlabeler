@@ -28,7 +28,8 @@ from filtro.views import (
     excuir_filtro,
     adicionar_classe,
     excluir_classe,
-    mover_classe
+    mover_classe,
+    adicionar_itemfiltro,
 )
 
 
@@ -67,7 +68,24 @@ urlpatterns = [
         name='filtros-filtro'
     ),
     path('filtros/excluir', excuir_filtro, name='filtros-excluir'),
-    path('filtros/adicionar-classe/<int:idfiltro>', adicionar_classe, name='filtros-adicionar-classe'),
-    path('filtros/excluir-classe-filtro/<int:idfiltro>/<int:idclasse>', excluir_classe, name='filtros-excluir-classe'),
-    path('filtros/mover-classe-filtro/<int:idfiltro>/<int:idclasse>/<str:direcao>', mover_classe, name='filtros-mover-classe'),
+    path(
+        'filtros/adicionar-classe/<int:idfiltro>',
+        adicionar_classe,
+        name='filtros-adicionar-classe'
+    ),
+    path(
+        'filtros/excluir-classe-filtro/<int:idfiltro>/<int:idclasse>',
+        excluir_classe,
+        name='filtros-excluir-classe'
+    ),
+    path(
+        'filtros/mover-classe-filtro/<int:idfiltro>/<int:idclasse>/<str:direcao>',
+        mover_classe,
+        name='filtros-mover-classe'
+    ),
+    path(
+        'filtros/adicionar-item-filtro/',
+        adicionar_itemfiltro,
+        name='filtros-adicionar-itemfiltro'
+    )
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

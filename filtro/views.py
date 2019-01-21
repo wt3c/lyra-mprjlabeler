@@ -8,7 +8,12 @@ from django.shortcuts import (
 )
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
-from .forms import AdicionarFiltroForm, FiltroForm, AdicionarClasseForm
+from .forms import (
+    AdicionarFiltroForm,
+    FiltroForm,
+    AdicionarClasseForm,
+    ItemFiltroForm,
+)
 from .models import (
     Filtro,
     ClasseFiltro
@@ -78,7 +83,8 @@ def filtro(request, idfiltro):
             'form': form,
             'model': m_filtro,
             'idfiltro': idfiltro,
-            'adicionarclasseform': AdicionarClasseForm()
+            'adicionarclasseform': AdicionarClasseForm(),
+            'itemfiltroform': ItemFiltroForm(),
         }
     )
 
@@ -168,5 +174,27 @@ def mover_classe(request, idfiltro, idclasse, direcao):
         reverse(
             'filtros-filtro',
             args=[idfiltro]
+        )
+    )
+
+
+@login_required
+@require_http_methods(['POST'])
+def adicionar_itemfiltro(request):
+    f_itemfiltro = ItemFiltroForm(request.POST)
+
+    if f_itemfiltro.is_valid():
+        f_itemfiltro.instance.classe_filtro = get_object_or_404(
+            ClasseFiltro,
+            pk=f_itemfiltro.cleaned_data['idclasse'])
+        
+        f_itemfiltro.save()
+
+        messages.success(request, 'Item de Filtro adicionado!')
+
+    return redirect(
+        reverse(
+            'filtros-filtro',
+            args=[f_itemfiltro.cleaned_data['idfiltro']]
         )
     )

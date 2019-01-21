@@ -53,7 +53,6 @@
                     </div>
                 </div>
                 <div class="text-right">
-                    
                     <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Salvar</button>
                     <a  href="{% url 'filtros' %}" class="btn btn-inverse waves-effect waves-light">Voltar</a>
                 </div>
@@ -84,8 +83,13 @@
                     <div class="col-sm-6">
                         <h3 class="box-title">
                             {{classe.nome}} 
-                            <a href="#" style="color: white;" title="Adicionar Termos de Busca">
-                                    <i class="fa fa-plus text-success m-r-10"></i>    
+                            <a href="#" 
+                            style="color: white;" 
+                            title="Adicionar Termos de Busca"
+                            data-toggle="modal"
+                            data-target="#adicionarItemFiltroModal"
+                            onclick="adicionaritemfiltro({{classe.id}})">
+                                <i class="fa fa-plus text-success m-r-10"></i>    
                             </a>
                         </h3>
                     </div>
@@ -117,14 +121,30 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Tipo</th>
-                                <th>Termos</th>
-                                <th>REGEX</th>
-                                <th class="text-nowrap">Ações</th>
+                                <th style="width:45%">Termos</th>
+                                <th style="width:45%">Tipo</th>
+                                <th style="width:5%">RegEx</th>
+                                <th class="text-nowrap" style="width:5%">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            
+                            {% for item in classe.itemfiltro_set.all %}
+                            <tr>
+                                <td>{{item.termos}}</td>
+                                <td>{{item.get_tipo_display}}</td>
+                                <td class="text-nowrap">
+                                    {% if item.regex %}
+                                        Sim
+                                    {% else %}
+                                        Não
+                                    {% endif %}
+                                </td>
+                                <td class="text-nowrap">
+                                    <a href="#" data-toggle="tooltip"><i class="fa fa-pencil text-inverse m-r-10"></i></a>
+                                    <a href="#" data-toggle="modal" ><i class="fa fa-close text-danger m-r-10"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -144,6 +164,9 @@
 
 <!-- Excluir Classe Modal -->
 {%include 'filtro/componentes/modal_confirmarexclusaoclasse.html' %}
+
+<!-- adicionar item de filtro modal -->
+{%include 'filtro/componentes/modal_adicionaritemfiltro.html'  %}
 
 <script>
 
