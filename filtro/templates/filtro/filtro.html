@@ -62,11 +62,13 @@
                 <button type="button" 
                 class="btn btn-success waves-effect waves-light m-r-10"
                 data-toggle="modal"
-                data-target="#adicionarClasseModal"> 
+                data-target="#adicionarClasseModal"
+                onclick='adicionarClasse();'> 
                     <i class="fa fa-plus m-r-10"></i>
                     Adicionar Classe de Filtro
                 </button>
             </div>
+
         </div>
     </div>
 </div>
@@ -83,10 +85,46 @@
                         <h3 class="box-title">{{classe.nome}}</h3>
                     </div>
                     <div class="col-sm-6" style='text-align: right;'>
+                        <h3>
+                        <a href="#" data-toggle="modal"
+                            data-target="#adicionarClasseModal"
+                            onclick='alterarClasse("{{classe.id}}", "{{classe.nome}}");'
+                            title="Alterar Nome da Classe">
+                            <i class="fa fa-pencil text-info m-r-10"></i>
+                        </a>
                         <i class="fa fa-up text-info m-r-10"></i>
                         <i class="fa fa-down text-info m-r-10"></i>
                         <i class="fa fa-trash text-danger m-r-10"></i>
+                    </h3>
                     </div>
+                </div>
+ 
+                <div class="row table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Termos</th>
+                                <th>Deadline</th>
+                                <th class="text-nowrap">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Lunar probe project</td>
+                                <td>
+                                    <div class="progress progress-xs margin-vertical-10 ">
+                                        <div class="progress-bar progress-bar-danger" style="width: 35%"></div>
+                                    </div>
+                                </td>
+                                <td>May 15, 2015</td>
+                                <td class="text-nowrap">
+                                    <a href="#" data-toggle="tooltip" data-original-title="Edit"> <i class="fa fa-pencil text-inverse m-r-10"></i> </a>
+                                    <a href="#" data-toggle="tooltip" data-original-title="Close"> <i class="fa fa-close text-danger"></i> </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 {% endfor %}
             </div>
@@ -100,5 +138,9 @@
 
 <!-- Adicionar Classe Modal-->
 {%include 'filtro/componentes/modal_adicionarclasse.html' %}
+
+<script>
+
+</script>
 
 {% endblock %}

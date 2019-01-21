@@ -20,18 +20,25 @@ class BaseModelForm(forms.ModelForm):
                 
 
 class AdicionarFiltroForm(BaseModelForm):
+    prefix = 'adicionar_filtro'
     class Meta:
         model = Filtro
         fields = ['nome']
 
 
 class FiltroForm(BaseModelForm):
+    prefix = 'filtro'
     class Meta:
         model = Filtro
         fields = ['nome', 'tipos_movimento', 'arquivo_documentos']
 
 
 class AdicionarClasseForm(BaseModelForm):
+    prefix = 'classe'
+    idclasse = forms.CharField(
+        required = False,
+        widget=forms.widgets.HiddenInput()
+    )
     class Meta:
         model = ClasseFiltro
         fields = ['nome']

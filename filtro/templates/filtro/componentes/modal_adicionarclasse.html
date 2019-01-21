@@ -3,13 +3,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="modal-title" id="adicionarClasseModalLabel1">Nova Classe de Filtro</h4> 
+                <h4 class="modal-title" id="adicionarClasseModalLabel1"></h4> 
             </div>
-            <form method='POST' action={% url 'filtros-adicionar-classe' idfiltro %}>
+            <form method='POST' id="frmNomeClasse" action='{% url 'filtros-adicionar-classe' idfiltro %}'>
                 {% csrf_token %}
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="recipient-name" class="control-label">Nome:</label>
+                        {{adicionarclasseform.idclasse}}
                         {{adicionarclasseform.nome}}
                     </div>
                 </div>
@@ -21,3 +22,16 @@
         </div>
     </div>
 </div>
+<script>
+    const adicionarClasse = () => {
+        document.querySelector('#adicionarClasseModalLabel1').innerHTML = 'Nova Classe de Filtro'
+        document.querySelector('#{{adicionarclasseform.nome.auto_id}}').value = ''
+        document.querySelector('#{{adicionarclasseform.idclasse.auto_id}}').value = null
+    }
+
+    const alterarClasse = (idClasse, valorAtual) => {
+        document.querySelector('#adicionarClasseModalLabel1').innerHTML = 'Atualizar Nome de Classe'
+        document.querySelector('#{{adicionarclasseform.nome.auto_id}}').value = valorAtual
+        document.querySelector('#{{adicionarclasseform.idclasse.auto_id}}').value = idClasse
+    }
+</script>

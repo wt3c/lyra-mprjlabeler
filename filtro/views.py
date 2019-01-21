@@ -11,6 +11,7 @@ from django.views.decorators.http import require_http_methods
 from .forms import AdicionarFiltroForm, FiltroForm, AdicionarClasseForm
 from .models import (
     Filtro,
+    ClasseFiltro
 )
 
 
@@ -93,7 +94,7 @@ def excuir_filtro(request):
     messages.success(request, 'Filtro removido com Sucesso!')
     return redirect(
         reverse(
-            'filtros'
+            'filtros',
         )
     )
 
@@ -101,14 +102,29 @@ def excuir_filtro(request):
 @login_required
 @require_http_methods(['POST'])
 def adicionar_classe(request, idfiltro):
-    m_adicionar = AdicionarClasseForm(request.POST)
-    m_filtro = obter_filtro(idfiltro, request.user.username)
+    f_adicionar = AdicionarClasseForm(request.POST)
 
-    m_adicionar.instance.filtro = m_filtro
-    m_adicionar.instance.ordem = len(m_filtro.classefiltro_set.all())
-    m_adicionar.save()
-    
-    messages.success(request, 'Classe de Filtro adicionada!')
+    if not f_adicionar.is_valid():
+        return None
+
+    if f_adicionar.cleaned_data['idclasse']:
+        f_adicionar = AdicionarClasseForm(
+            request.POST, 
+            instance=get_object_or_404(
+                ClasseFiltro,
+                pk=f_adicionar.cleaned_data['idclasse'])
+        )
+        
+        f_adicionar.save()
+        messages.success(request, 'Classe de Filtro alterada com sucesso!')
+    else:
+        m_filtro = obter_filtro(idfiltro, request.user.username)
+
+        f_adicionar.instance.filtro = m_filtro
+        f_adicionar.instance.ordem = len(m_filtro.classefiltro_set.all())
+        f_adicionar.save()
+        
+        messages.success(request, 'Classe de Filtro adicionada!')
 
     return redirect(
         reverse(
