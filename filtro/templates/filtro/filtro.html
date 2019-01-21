@@ -92,8 +92,12 @@
                             title="Alterar Nome da Classe">
                             <i class="fa fa-pencil text-info m-r-10"></i>
                         </a>
-                        <i class="fa fa-up text-info m-r-10"></i>
-                        <i class="fa fa-down text-info m-r-10"></i>
+                        <a href="{% url 'filtros-mover-classe' idfiltro classe.id 'abaixo' %}" title="Mover Abaixo">
+                            <i class="fa fa-level-down text-info m-r-10"></i>
+                        </a>
+                        <a href="{% url 'filtros-mover-classe' idfiltro classe.id 'acima' %}" title="Mover Acima">
+                            <i class="fa fa-level-up text-info m-r-10"></i>
+                        </a>
                         <a href="#" data-toggle="modal"
                             data-target="#confirmarexclusaoclassemodal"
                             onclick='excluirclasse("{{classe.nome}}", "{% url 'filtros-excluir-classe' idfiltro classe.id %}");'

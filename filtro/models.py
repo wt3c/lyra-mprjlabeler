@@ -45,6 +45,7 @@ class Filtro(models.Model):
 class ClasseFiltro(OrderedModel):
     filtro = models.ForeignKey('Filtro', on_delete=models.CASCADE)
     nome = models.CharField(max_length=50)
+    order_with_respect_to = 'filtro'
     
     class Meta(OrderedModel.Meta):
         pass

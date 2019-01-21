@@ -149,3 +149,24 @@ def excluir_classe(request, idfiltro, idclasse):
                 args=[idfiltro]
             )
         )
+
+
+@login_required
+@require_http_methods(['GET'])
+def mover_classe(request, idfiltro, idclasse, direcao):
+    m_classe = get_object_or_404(ClasseFiltro, pk=idclasse, filtro__id=idfiltro)
+
+    if direcao == 'acima':
+        m_classe.up()
+        
+    else:
+        m_classe.down()
+    
+    messages.success(request, 'Classe movida %s!' % direcao)
+
+    return redirect(
+        reverse(
+            'filtros-filtro',
+            args=[idfiltro]
+        )
+    )
