@@ -54,6 +54,7 @@ class ItemFiltro(models.Model):
     classe_filtro = models.ForeignKey('ClasseFiltro', on_delete=models.CASCADE)
     termos = models.CharField(max_length=255)
     tipo = models.CharField(max_length=1, choices=TIPOS_FILTRO)
+    regex = models.BooleanField(default=False)
 
 
 class Documento(models.Model):
