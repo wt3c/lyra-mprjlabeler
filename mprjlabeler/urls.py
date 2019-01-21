@@ -26,7 +26,8 @@ from filtro.views import (
     adicionar_filtro,
     filtro,
     excuir_filtro,
-    adicionar_classe
+    adicionar_classe,
+    excluir_classe
 )
 
 
@@ -66,4 +67,5 @@ urlpatterns = [
     ),
     path('filtros/excluir', excuir_filtro, name='filtros-excluir'),
     path('filtros/adicionar-classe/<int:idfiltro>', adicionar_classe, name='filtros-adicionar-classe'),
+    path('filtros/excluir-classe-filtro/<int:idfiltro>/<int:idclasse>', excluir_classe, name='filtros-excluir-classe')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -132,3 +132,20 @@ def adicionar_classe(request, idfiltro):
             args=[idfiltro]
         )
     )
+
+
+@login_required
+@require_http_methods(['POST'])
+def excluir_classe(request, idfiltro, idclasse):
+    m_classe = get_object_or_404(ClasseFiltro, pk=idclasse, filtro__id=idfiltro)
+
+    m_classe.delete()
+
+    messages.warning(request, 'Classe de filtro removida')
+
+    return redirect(
+            reverse(
+                'filtros-filtro',
+                args=[idfiltro]
+            )
+        )

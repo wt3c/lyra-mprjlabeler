@@ -94,7 +94,12 @@
                         </a>
                         <i class="fa fa-up text-info m-r-10"></i>
                         <i class="fa fa-down text-info m-r-10"></i>
-                        <i class="fa fa-trash text-danger m-r-10"></i>
+                        <a href="#" data-toggle="modal"
+                            data-target="#confirmarexclusaoclassemodal"
+                            onclick='excluirclasse("{{classe.nome}}", "{% url 'filtros-excluir-classe' idfiltro classe.id %}");'
+                            title="Excluir Classe">
+                            <i class="fa fa-trash text-danger m-r-10"></i>
+                        </a>
                     </h3>
                     </div>
                 </div>
@@ -128,6 +133,9 @@
 
 <!-- Adicionar Classe Modal-->
 {%include 'filtro/componentes/modal_adicionarclasse.html' %}
+
+<!-- Excluir Classe Modal -->
+{%include 'filtro/componentes/modal_confirmarexclusaoclasse.html' %}
 
 <script>
 
