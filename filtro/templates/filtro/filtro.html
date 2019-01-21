@@ -82,7 +82,12 @@
                 {% for classe in model.classefiltro_set.all %}
                 <div class="row">
                     <div class="col-sm-6">
-                        <h3 class="box-title">{{classe.nome}}</h3>
+                        <h3 class="box-title">
+                            {{classe.nome}} 
+                            <a href="#" style="color: white;" title="Adicionar Termos de Busca">
+                                    <i class="fa fa-plus text-success m-r-10"></i>    
+                            </a>
+                        </h3>
                     </div>
                     <div class="col-sm-6" style='text-align: right;'>
                         <h3>
@@ -122,7 +127,6 @@
                             
                         </tbody>
                     </table>
-                    <a href="#" class="btn btn-success pull-right m-t-10 font-20" style="color: white;" title="Adicionar Termos de Busca">+</a>
                 </div>
                 <hr>
                 {% endfor %}
