@@ -213,3 +213,20 @@ def adicionar_itemfiltro(request):
             args=[f_itemfiltro.cleaned_data['idfiltro']]
         )
     )
+
+
+@login_required
+@require_http_methods(['GET'])
+def excluir_item_filtro(request, idfiltro, iditemfiltro):
+    m_itemfiltro = get_object_or_404(ItemFiltro, pk=iditemfiltro)
+    
+    m_itemfiltro.delete()
+
+    messages.warning(request, 'Item de Filtro removido com sucesso!')
+
+    return redirect(
+        reverse(
+            'filtros-filtro',
+            args=[idfiltro]
+        )
+    )
