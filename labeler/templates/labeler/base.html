@@ -51,12 +51,19 @@
 
 
 <script>
-    $(document).ready(function() {
+    $(document).ready( () => {
         // For select 2
         $(".select2").select2();
         $('.selectpicker').selectpicker();
+
+        $('.modal').on('shown.bs.modal', (element, sender) => {
+            let objects = element.currentTarget.querySelector("input[type=text]")
+            if(objects) objects.focus()
+        })
     });
 </script>
+
+
 
 {% include 'labeler/widgets/toastr.html' %}
 
