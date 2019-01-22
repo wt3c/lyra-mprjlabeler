@@ -26,7 +26,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                    <button type="submit" class="btn btn-primary" id="btnitemfiltro">Adicionar</button>
                 </div>
             </form>
         </div>
@@ -37,8 +37,25 @@
     const adicionaritemfiltro = (idclasse) => {
         document.querySelector('#adicionarItemFiltroModalLabel1').innerHTML = 'Adicionar Item de Filtro'
         document.querySelector('#{{itemfiltroform.idclasse.auto_id}}').value = idclasse
-        document.querySelector('#{{itemfiltroform.idfiltro.auto_id}}').value = {{idfiltro}}
+        document.querySelector('#{{itemfiltroform.idfiltro.auto_id}}').value = '{{idfiltro}}'
         document.querySelector('#{{itemfiltroform.iditemfiltro.auto_id}}').value = null
+        document.querySelector('#{{itemfiltroform.termos.auto_id}}').value = ''
+        document.querySelector('#{{itemfiltroform.tipo.auto_id}}').value = null
+        document.querySelector('#{{itemfiltroform.regex.auto_id}}').checked = false
+        document.querySelector('#btnitemfiltro').innerHTML = 'Adicionar'
+        $('.selectpicker').selectpicker('render');
+    }
+
+    const alteraritemfiltro = (idclasse, iditemfiltro, termos, tipo, regex) => {
+        document.querySelector('#adicionarItemFiltroModalLabel1').innerHTML = 'Alterar Item de Filtro'
+        document.querySelector('#{{itemfiltroform.idclasse.auto_id}}').value = idclasse
+        document.querySelector('#{{itemfiltroform.idfiltro.auto_id}}').value = '{{idfiltro}}'
+        document.querySelector('#{{itemfiltroform.iditemfiltro.auto_id}}').value = iditemfiltro
+        document.querySelector('#{{itemfiltroform.termos.auto_id}}').value = termos
+        document.querySelector('#{{itemfiltroform.tipo.auto_id}}').value = tipo
+        document.querySelector('#{{itemfiltroform.regex.auto_id}}').checked = regex == 'True'
+        document.querySelector('#btnitemfiltro').innerHTML = 'Alterar'
+        $('.selectpicker').selectpicker('render');
     }
 
 </script>

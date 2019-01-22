@@ -16,7 +16,8 @@ from .forms import (
 )
 from .models import (
     Filtro,
-    ClasseFiltro
+    ClasseFiltro,
+    ItemFiltro
 )
 
 
@@ -184,13 +185,27 @@ def adicionar_itemfiltro(request):
     f_itemfiltro = ItemFiltroForm(request.POST)
 
     if f_itemfiltro.is_valid():
-        f_itemfiltro.instance.classe_filtro = get_object_or_404(
-            ClasseFiltro,
-            pk=f_itemfiltro.cleaned_data['idclasse'])
-        
-        f_itemfiltro.save()
+        if f_itemfiltro.cleaned_data['iditemfiltro']:
+            m_itemfiltro = get_object_or_404(
+                ItemFiltro,
+                pk=f_itemfiltro.cleaned_data['iditemfiltro']
+            )
 
-        messages.success(request, 'Item de Filtro adicionado!')
+            f_itemfiltro = ItemFiltroForm(
+                request.POST,
+                instance=m_itemfiltro)
+            
+            f_itemfiltro.save()
+
+            messages.success(request, 'Item de Filtro alterado!')
+        else:
+            f_itemfiltro.instance.classe_filtro = get_object_or_404(
+                ClasseFiltro,
+                pk=f_itemfiltro.cleaned_data['idclasse'])
+            
+            f_itemfiltro.save()
+
+            messages.success(request, 'Item de Filtro adicionado!')
 
     return redirect(
         reverse(

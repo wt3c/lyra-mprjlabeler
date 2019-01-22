@@ -140,7 +140,13 @@
                                     {% endif %}
                                 </td>
                                 <td class="text-nowrap">
-                                    <a href="#" data-toggle="tooltip"><i class="fa fa-pencil text-inverse m-r-10"></i></a>
+                                    <a href="#" 
+                                        title="Alterar Termos de Busca"
+                                        data-toggle="modal"
+                                        data-target="#adicionarItemFiltroModal"
+                                        onclick="alteraritemfiltro({{classe.id}}, {{item.id}}, '{{item.termos}}', '{{item.tipo}}', '{{item.regex}}' )">
+                                        <i class="fa fa-pencil text-inverse m-r-10"></i>
+                                    </a>
                                     <a href="#" data-toggle="modal" ><i class="fa fa-close text-danger m-r-10"></i></a>
                                 </td>
                             </tr>
