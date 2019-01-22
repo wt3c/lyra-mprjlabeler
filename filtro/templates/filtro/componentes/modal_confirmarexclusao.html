@@ -1,0 +1,29 @@
+<div class="modal fade" 
+        id="confirmarexclusaomodal"
+        tabindex="-1" role="dialog" 
+        aria-labelledby="confirmarexclusaolabel" 
+        aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title text-danger" id="confirmarexclusaolabel">Atenção!</h4> 
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza de que deseja excluir <b id="nomeexclusao"></b>?</p>
+                <p>Ao realizar esta ação, todos os filtros, configurações, arquivos e processos atrelados a este filtro serão excluidos.</p>
+                <p>Não é possível desfazer esta ação!</p>
+            </div>
+            <div class="modal-footer">
+                <form method="POST" action={% url 'filtros-excluir' %}>
+                    {% csrf_token %}
+                    <input type="hidden" id="idfiltro" name="idfiltro">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

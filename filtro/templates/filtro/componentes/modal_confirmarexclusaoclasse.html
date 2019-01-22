@@ -1,0 +1,35 @@
+<div class="modal fade" 
+        id="confirmarexclusaoclassemodal"
+        tabindex="-1" role="dialog" 
+        aria-labelledby="confirmarexclusaoclassemodallabel" 
+        aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title text-danger" id="confirmarexclusaoclassemodallabel">Atenção!</h4> 
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza de que deseja excluir <b id="nomeexclusaoclasse"></b>?</p>
+                <p>Ao realizar esta ação, todos os itens de filtros e configurações associadas a ela serão automaticamente excluídas.</p>
+                <p>Não é possível desfazer esta ação!</p>
+            </div>
+            <div class="modal-footer">
+                <form method="POST" id="frmexcluirclasse" action=''>
+                    {% csrf_token %}
+                    <input type="hidden" id="idfiltro" name="idfiltro">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" id='btnconfirmarexcluirclasse' class="btn btn-danger">Excluir</a>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<script>
+const excluirclasse = (nomeclasse, href) => {
+    document.querySelector('#nomeexclusaoclasse').innerHTML = nomeclasse
+    document.querySelector('#frmexcluirclasse').action = href
+}
+</script>

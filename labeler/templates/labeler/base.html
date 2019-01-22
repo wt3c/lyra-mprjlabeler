@@ -19,8 +19,12 @@
     <link href="{% static 'labeler/css/style.css'%}" rel="stylesheet">
     <!-- ===== Color CSS ===== -->
     <link href="{% static 'labeler/css/colors/default-dark.css'%}" id="theme" rel="stylesheet">
-
+    <link href="{% static 'labeler/plugins/components/custom-select/custom-select.css'%}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'labeler/plugins/components/bootstrap-select/bootstrap-select.min.css'%}" rel="stylesheet" />
     
+    <link href="{% static  'labeler/plugins/components/toast-master/css/jquery.toast.css' %}" rel="stylesheet">
+
+
 </head>
 {% block body%}<body>{% endblock %}
 {% block basecontent %}
@@ -38,8 +42,30 @@
 <script src="{% static 'labeler/js/waves.js'%}"></script>
 <!-- Custom Theme JavaScript -->
 <script src="{% static 'labeler/js/custom.js'%}"></script>
+<script src="{% static 'labeler/js/jasny-bootstrap.js'%}"></script>
 
-{% include 'labeler/widgets/message.html' %}
+<script src="{% static 'labeler/plugins/components/custom-select/custom-select.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'labeler/plugins/components/bootstrap-select/bootstrap-select.min.js' %}" type="text/javascript"></script>
+
+<script src="{% static 'labeler/plugins/components/toast-master/js/jquery.toast.js' %}"></script>
+
+
+<script>
+    $(document).ready( () => {
+        // For select 2
+        $(".select2").select2();
+        $('.selectpicker').selectpicker();
+
+        $('.modal').on('shown.bs.modal', (element, sender) => {
+            let objects = element.currentTarget.querySelector("input[type=text]")
+            if(objects) objects.focus()
+        })
+    });
+</script>
+
+
+
+{% include 'labeler/widgets/toastr.html' %}
 
 </body>
 </html>

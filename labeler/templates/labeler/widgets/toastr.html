@@ -1,0 +1,21 @@
+{% if messages %}
+<script>
+"use strict";
+
+$(document).ready( function() {
+    {% for message in messages %}
+        $.toast({
+            heading: 'Lyra Labeler',
+            text: '{{message}}',
+            position: 'top-right',
+            loaderBg: '#ff6849',
+            icon: '{{ message.tags }}',
+            hideAfter: 5000,
+            stack: 6
+        });
+    {% endfor %}
+});
+
+
+</script>
+{% endif %}

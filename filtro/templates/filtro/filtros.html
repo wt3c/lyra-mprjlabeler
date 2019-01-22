@@ -1,0 +1,60 @@
+{% extends 'labeler/index.html' %}
+{% load tags_extras %}
+{% block 'content' %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">Filtros de Documentos</div>
+            <div class="panel-body">
+                <div class="button-box">
+                    <button 
+                        class="fcbtn btn btn-success btn-outline btn-1d"
+                        data-toggle="modal"
+                        data-target="#adicionarModal">
+                        <i class="fa fa-plus text-inverse m-r-10"></i>Adicionar Filtro
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Situação</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in filtros %}
+                                <tr>
+                                    <td>{{item.nome}}</td>
+                                    <td>{{item.get_situacao_display}}</td>
+                                    <td class="text-nowrap">        
+                                        <a href="{% url 'filtros-filtro' item.id %}" data-toggle="tooltip" data-original-title="Editar"><i class="fa fa-pencil text-inverse m-r-10"></i></a>
+                                        <a href="#" data-toggle="modal" data-target="#confirmarexclusaomodal" data-original-title="Excluir" onclick="atualizar_filtro_exclusao('{{item.id}}', '{{item.nome}}')"><i class="fa fa-close text-danger m-r-10"></i></a>
+                                        <a href="#" data-toggle="tooltip" data-original-title="Executar Filtro"> <i class="fa fa-bolt text-success m-r-10"></i> </a>
+                                        <a href="#" data-toggle="tooltip" data-original-title="Baixar Resultados"> <i class="fa fa-download text-warning m-r-10"></i></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- adicionar filtro modal -->
+{%include 'filtro/componentes/modal_adicionarfiltro.html'%}
+<!-- confirmar exclusao modal -->
+{%include 'filtro/componentes/modal_confirmarexclusao.html'%}
+
+<script>
+    const atualizar_filtro_exclusao = (idfiltro, nome) => {
+        document.querySelector('#idfiltro').value = idfiltro
+        document.querySelector('#nomeexclusao').innerHTML = nome
+    }
+</script>
+{% endblock %}

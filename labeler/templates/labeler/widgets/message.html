@@ -1,6 +1,6 @@
 {% if messages %}
 {% for message in messages %}
-    <div class="myadmin-alert myadmin-alert-icon myadmin-alert-click alert-danger myadmin-alert-bottom alertbottom"> 
+    <div class="myadmin-alert myadmin-alert-icon myadmin-alert-click {{ message.tags }} myadmin-alert-bottom alertbottom"> 
         <i class="ti-user"></i> {{message}} <a href="#" class="closed">&times;</a> 
     </div>
 {% endfor %}
