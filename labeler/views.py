@@ -12,6 +12,7 @@ from .forms import RespostaForm
 def index(request):
     return render(request, 'labeler/index.html')
 
+
 @login_required
 def campanhas(request):
     "View para retornar lista de Campanhas"

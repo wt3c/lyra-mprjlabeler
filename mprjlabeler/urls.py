@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.views.generic.base import RedirectView
 from django.contrib.auth.views import logout
 from django.conf.urls.static import static
 from django.conf import settings
@@ -80,7 +79,8 @@ urlpatterns = [
         name='filtros-excluir-classe'
     ),
     path(
-        'filtros/mover-classe-filtro/<int:idfiltro>/<int:idclasse>/<str:direcao>',
+        ('filtros/mover-classe-filtro/<int:idfiltro>'
+         '/<int:idclasse>/<str:direcao>'),
         mover_classe,
         name='filtros-mover-classe'
     ),
@@ -94,4 +94,10 @@ urlpatterns = [
         excluir_item_filtro,
         name='filtros-excluir-itemfiltro'
     ),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(
+    settings.STATIC_URL,
+    document_root=settings.STATIC_ROOT
+) + static(
+    settings.MEDIA_URL,
+    document_root=settings.MEDIA_ROOT
+)

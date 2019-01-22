@@ -14,14 +14,16 @@ class BaseModelForm(forms.ModelForm):
             field = self.fields[key]
             if type(field.widget) == forms.TextInput:
                 field.widget.attrs['class'] = 'form-control'
-            elif type(field.widget) == forms.SelectMultiple or type(field.widget) == forms.Select:
+            elif (type(field.widget) == forms.SelectMultiple
+                    or type(field.widget) == forms.Select):
                 field.widget.attrs['class'] = 'selectpicker form-control'
                 field.widget.attrs['data-style'] = 'form-control'
                 field.widget.attrs['title'] = 'Selecione as Opções Desejadas'
-                
+
 
 class AdicionarFiltroForm(BaseModelForm):
     prefix = 'adicionar_filtro'
+
     class Meta:
         model = Filtro
         fields = ['nome']
@@ -29,6 +31,7 @@ class AdicionarFiltroForm(BaseModelForm):
 
 class FiltroForm(BaseModelForm):
     prefix = 'filtro'
+
     class Meta:
         model = Filtro
         fields = ['nome', 'tipos_movimento', 'arquivo_documentos']
@@ -37,9 +40,10 @@ class FiltroForm(BaseModelForm):
 class AdicionarClasseForm(BaseModelForm):
     prefix = 'classe'
     idclasse = forms.CharField(
-        required = False,
+        required=False,
         widget=forms.widgets.HiddenInput()
     )
+
     class Meta:
         model = ClasseFiltro
         fields = ['nome']
@@ -48,15 +52,15 @@ class AdicionarClasseForm(BaseModelForm):
 class ItemFiltroForm(BaseModelForm):
     prefix = 'itemfiltro'
     idclasse = forms.CharField(
-        required = False,
+        required=False,
         widget=forms.widgets.HiddenInput()
     )
     idfiltro = forms.CharField(
-        required = False,
+        required=False,
         widget=forms.widgets.HiddenInput()
     )
     iditemfiltro = forms.CharField(
-        required = False,
+        required=False,
         widget=forms.widgets.HiddenInput()
     )
 

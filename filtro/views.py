@@ -4,7 +4,6 @@ from django.shortcuts import (
     render,
     redirect,
     get_object_or_404,
-    get_list_or_404
 )
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
@@ -56,7 +55,9 @@ def adicionar_filtro(request):
 
     form.save()
 
-    messages.success(request, "Filtro %s adicionado e salvo" % form.instance.nome)
+    messages.success(
+        request,
+        "Filtro %s adicionado e salvo" % form.instance.nome)
 
     return redirect(
         reverse(
@@ -72,7 +73,11 @@ def filtro(request, idfiltro):
     form = FiltroForm(instance=m_filtro)
 
     if request.method == 'POST':
-        form = FiltroForm(request.POST, request.FILES, instance=m_filtro)
+        form = FiltroForm(
+            request.POST,
+            request.FILES,
+            instance=m_filtro
+        )
         form.save()
 
         messages.success(request, "Filtro salvo!")
@@ -116,12 +121,12 @@ def adicionar_classe(request, idfiltro):
 
     if f_adicionar.cleaned_data['idclasse']:
         f_adicionar = AdicionarClasseForm(
-            request.POST, 
+            request.POST,
             instance=get_object_or_404(
                 ClasseFiltro,
                 pk=f_adicionar.cleaned_data['idclasse'])
         )
-        
+
         f_adicionar.save()
         messages.success(request, 'Classe de Filtro alterada com sucesso!')
     else:
@@ -130,7 +135,7 @@ def adicionar_classe(request, idfiltro):
         f_adicionar.instance.filtro = m_filtro
         f_adicionar.instance.ordem = len(m_filtro.classefiltro_set.all())
         f_adicionar.save()
-        
+
         messages.success(request, 'Classe de Filtro adicionada!')
 
     return redirect(
@@ -144,7 +149,11 @@ def adicionar_classe(request, idfiltro):
 @login_required
 @require_http_methods(['POST'])
 def excluir_classe(request, idfiltro, idclasse):
-    m_classe = get_object_or_404(ClasseFiltro, pk=idclasse, filtro__id=idfiltro)
+    m_classe = get_object_or_404(
+        ClasseFiltro,
+        pk=idclasse,
+        filtro__id=idfiltro
+    )
 
     m_classe.delete()
 
@@ -161,14 +170,17 @@ def excluir_classe(request, idfiltro, idclasse):
 @login_required
 @require_http_methods(['GET'])
 def mover_classe(request, idfiltro, idclasse, direcao):
-    m_classe = get_object_or_404(ClasseFiltro, pk=idclasse, filtro__id=idfiltro)
+    m_classe = get_object_or_404(
+        ClasseFiltro,
+        pk=idclasse,
+        filtro__id=idfiltro)
 
     if direcao == 'acima':
         m_classe.up()
-        
+
     else:
         m_classe.down()
-    
+
     messages.success(request, 'Classe movida %s!' % direcao)
 
     return redirect(
@@ -194,7 +206,7 @@ def adicionar_itemfiltro(request):
             f_itemfiltro = ItemFiltroForm(
                 request.POST,
                 instance=m_itemfiltro)
-            
+
             f_itemfiltro.save()
 
             messages.success(request, 'Item de Filtro alterado!')
@@ -202,7 +214,7 @@ def adicionar_itemfiltro(request):
             f_itemfiltro.instance.classe_filtro = get_object_or_404(
                 ClasseFiltro,
                 pk=f_itemfiltro.cleaned_data['idclasse'])
-            
+
             f_itemfiltro.save()
 
             messages.success(request, 'Item de Filtro adicionado!')
@@ -219,7 +231,7 @@ def adicionar_itemfiltro(request):
 @require_http_methods(['GET'])
 def excluir_item_filtro(request, idfiltro, iditemfiltro):
     m_itemfiltro = get_object_or_404(ItemFiltro, pk=iditemfiltro)
-    
+
     m_itemfiltro.delete()
 
     messages.warning(request, 'Item de Filtro removido com sucesso!')
