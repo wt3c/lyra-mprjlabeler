@@ -18,6 +18,7 @@ from .models import (
     ClasseFiltro,
     ItemFiltro
 )
+from .tasks import submeter_classificacao
 
 
 def obter_filtro(idfiltro, username):
@@ -235,6 +236,26 @@ def excluir_item_filtro(request, idfiltro, iditemfiltro):
     m_itemfiltro.delete()
 
     messages.warning(request, 'Item de Filtro removido com sucesso!')
+
+    return redirect(
+        reverse(
+            'filtros-filtro',
+            args=[idfiltro]
+        )
+    )
+
+
+@login_required
+@require_http_methods(['GET'])
+def classificar(request, idfiltro):
+    m_filtro = obter_filtro(idfiltro, request.user.username)
+
+    submeter_classificacao.delay(idfiltro)
+
+    m_filtro.situacao = '2'
+    m_filtro.save()
+
+    messages.info(request, 'Filtro submetido para classificação! Acompanhe o andamento pela tela de gestão dos filtros.')
 
     return redirect(
         reverse(

@@ -30,6 +30,7 @@ from filtro.views import (
     mover_classe,
     adicionar_itemfiltro,
     excluir_item_filtro,
+    classificar,
 )
 
 
@@ -93,6 +94,11 @@ urlpatterns = [
         'filtros/excluir-item-filtro/<int:idfiltro>/<int:iditemfiltro>',
         excluir_item_filtro,
         name='filtros-excluir-itemfiltro'
+    ),
+    path(
+        'filtros/classificar-filtro/<int:idfiltro>',
+        classificar,
+        name='filtros-classificar'
     ),
 ] + static(
     settings.STATIC_URL,
