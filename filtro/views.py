@@ -79,6 +79,7 @@ def filtro(request, idfiltro):
             request.FILES,
             instance=m_filtro
         )
+        form.is_valid()
         form.save()
 
         messages.success(request, "Filtro salvo!")

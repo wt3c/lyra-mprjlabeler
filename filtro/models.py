@@ -63,12 +63,13 @@ class ItemFiltro(models.Model):
 
 
 class Documento(models.Model):
-    filtro = models.ForeignKey(
+    classe_filtro = models.ForeignKey(
         'ClasseFiltro',
         blank=True,
         null=True,
         on_delete=models.CASCADE
     )
+    filtro = models.ForeignKey('Filtro', on_delete=models.CASCADE)
     numero = models.CharField(max_length=32)
     tipo_movimento = models.ForeignKey(
         'TipoMovimento',

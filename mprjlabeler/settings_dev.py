@@ -149,6 +149,22 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'filtro': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+        },
+    },
+}
+
 CELERY_BROKER_URL=os.environ["CELERY_URL"]
 
 if "AMBIENTE" in os.environ and os.environ["AMBIENTE"] == "producao":
