@@ -100,18 +100,15 @@
             meuprogresso.style.display = 'block'
             minhabarra.style.width = resposta.percentual + '%'
             minhabarra.class = `progress-bar progress-bar-${situacoes[resposta.situacao]}`
-            return
         }
         if( ! situacoes[resposta.situacao] ) {
             btnexecutar.style.display = 'inline'
         }
         if( resposta.situacao == '7' ) {
             btnexecutar.style.display = 'inline'
-            return
         }
         if( resposta.situacao == '5' ) {
             btncompactar.style.display = 'inline'
-            return
         }
     }
 
