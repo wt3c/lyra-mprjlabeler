@@ -7,8 +7,10 @@ from .models import (
     Documento,
 )
 
+
 class DocumentoAdmin(admin.ModelAdmin):
     list_display = ['numero', 'tipo_movimento', 'classe_filtro']
+
 
 # Register your models here.
 admin.site.register(TipoMovimento)

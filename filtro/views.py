@@ -20,7 +20,6 @@ from .models import (
 )
 from .tasks import (
     submeter_classificacao,
-    classificar_baixados
 )
 
 
@@ -252,14 +251,13 @@ def excluir_item_filtro(request, idfiltro, iditemfiltro):
 @login_required
 @require_http_methods(['GET'])
 def classificar(request, idfiltro):
-    m_filtro = obter_filtro(idfiltro, request.user.username)
+    submeter_classificacao.delay(idfiltro)
 
-    classificar_baixados.delay(idfiltro)
-
-    m_filtro.situacao = '2'
-    m_filtro.save()
-
-    messages.info(request, 'Filtro submetido para classificação! Acompanhe o andamento pela tela de gestão dos filtros.')
+    messages.info(
+        request,
+        ('Filtro submetido para classificação! Acompanhe o '
+         'andamento pela tela de gestão dos filtros.')
+    )
 
     return redirect(
         reverse(
