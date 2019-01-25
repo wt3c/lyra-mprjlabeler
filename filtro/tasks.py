@@ -3,6 +3,7 @@ import logging
 import re
 from celery import shared_task
 from processostjrj.mni import consulta_processo, cria_cliente
+from slugify import slugify
 from .models import (
     Filtro,
     Documento
@@ -10,6 +11,7 @@ from .models import (
 
 
 logger = logging.getLogger(__name__)
+
 
 def limpar_documentos(m_filtro):
     m_filtro.documento_set.all().delete()
@@ -93,3 +95,64 @@ def submeter_classificacao(idfiltro):
         pre_documentos.extend(bloco)
 
     obtem_documentos_finais(pre_documentos, m_filtro)
+
+
+BASE_CLASSIFICADOR = {
+            "nome":None,
+            "parametros": {
+                "regex": [],
+                "regex_reforco": None,
+                "regex_exclusao": None,
+                "regex_invalidacao": None,
+                "coadunadas": None
+            }
+        }
+
+
+def transforma_em_regex(itemfiltro):
+    if itemfiltro.regex:
+        return '(%s)' % itemfiltro.termos
+    else:
+        return '(%s)' % re.escape(itemfiltro.termos)
+
+
+
+def montar_estrutura_filtro(m_filtro):
+    retorno = []
+    for classe in m_filtro.classefiltro_set.all():
+        pre_classe = {
+            "nome":None,
+            "parametros": {
+                "regex": [],
+                "regex_reforco": None,
+                "regex_exclusao": None,
+                "regex_invalidacao": None,
+                "coadunadas": None
+            }
+        }
+
+        pre_classe['nome'] = slugify(classe.nome)
+        pre_classe['parametros']['regex'] = list(map(
+            transforma_em_regex, filter(lambda x: x.tipo == '1', classe.itemfiltro_set.all())))
+        pre_classe['parametros']['regex_reforco'] = list(map(
+            transforma_em_regex, filter(lambda x: x.tipo == '2', classe.itemfiltro_set.all())))
+        pre_classe['parametros']['regex_exclusao'] = list(map(
+            transforma_em_regex, filter(lambda x: x.tipo == '3', classe.itemfiltro_set.all())))
+        pre_classe['parametros']['regex_invalidacao'] = list(map(
+            transforma_em_regex, filter(lambda x: x.tipo == '4', classe.itemfiltro_set.all())))
+        pre_classe['parametros']['coadunadas'] = list(map(
+            transforma_em_regex, filter(lambda x: x.tipo == '5', classe.itemfiltro_set.all())))
+
+        retorno.append(pre_classe)
+    
+    return retorno
+
+
+@shared_task
+def classificar_baixados(idfiltro):
+    logger.info('Classificando filtro %s' % idfiltro)
+    m_filtro = Filtro.objects.get(pk=idfiltro)
+
+    estrutura = montar_estrutura_filtro(m_filtro)
+
+    logger.info(estrutura)

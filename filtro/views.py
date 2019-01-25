@@ -18,7 +18,10 @@ from .models import (
     ClasseFiltro,
     ItemFiltro
 )
-from .tasks import submeter_classificacao
+from .tasks import (
+    submeter_classificacao,
+    classificar_baixados
+)
 
 
 def obter_filtro(idfiltro, username):
@@ -251,7 +254,7 @@ def excluir_item_filtro(request, idfiltro, iditemfiltro):
 def classificar(request, idfiltro):
     m_filtro = obter_filtro(idfiltro, request.user.username)
 
-    submeter_classificacao.delay(idfiltro)
+    classificar_baixados.delay(idfiltro)
 
     m_filtro.situacao = '2'
     m_filtro.save()
