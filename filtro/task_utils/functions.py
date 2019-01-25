@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def limpar_documentos(m_filtro):
-    m_filtro.documento_set.clear()
+    m_filtro.documento_set.all().delete()
 
 
 def parse_documentos(m_filtro):
@@ -38,6 +38,9 @@ def download_processos(documentos):
 def parse_documento(params):
     tipos_movimento, processo = params
     retorno = []
+    if 'movimento' not in processo.processo:
+        return retorno
+
     for tipo in tipos_movimento:
         documentos = filter(
             lambda x: re.findall(
