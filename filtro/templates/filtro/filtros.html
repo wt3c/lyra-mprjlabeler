@@ -58,7 +58,8 @@
                                         <a href="#"
                                             id="btncompactar_{{item.id}}" 
                                             data-toggle="tooltip" data-original-title="Compactar Resultados" 
-                                            style="display:none;"> <i class="fa fa-download text-warning m-r-10"></i>
+                                            style="display:none;"> 
+                                            <i class="fa fa-file-zip-o text-warning m-r-10"></i>
                                         </a>
 
                                     </td>
@@ -103,14 +104,13 @@
         }
         if( ! situacoes[resposta.situacao] ) {
             btnexecutar.style.display = 'inline'
-            return
         }
         if( resposta.situacao == '7' ) {
             btnexecutar.style.display = 'inline'
             return
         }
         if( resposta.situacao == '5' ) {
-            btnexecutar.style.display = 'inline'
+            btncompactar.style.display = 'inline'
             return
         }
     }
