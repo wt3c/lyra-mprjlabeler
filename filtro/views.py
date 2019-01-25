@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import (
     render,
@@ -277,5 +278,26 @@ def obter_situacao(request, idfiltro):
             'situacao': m_filtro.situacao,
             'percentual': m_filtro.percentual_atual,
             'descricao': m_filtro.get_situacao_display()
+        }
+    )
+
+
+@login_required
+@require_http_methods(['GET'])
+def listar_resultados(request, idfiltro):
+    m_filtro = obter_filtro(idfiltro, request.user.username)
+
+    documentos = m_filtro.documento_set.all()
+    paginator = Paginator(documentos, 25)
+
+    page = request.GET.get('page', 1)
+    documentos = paginator.get_page(page)
+
+    return render(
+        request,
+        'filtro/resultados.html',
+        {
+            'documentos': documentos,
+            'filtro': m_filtro
         }
     )

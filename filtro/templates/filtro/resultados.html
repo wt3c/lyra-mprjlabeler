@@ -1,0 +1,87 @@
+{% extends 'labeler/index.html' %}
+{% load tags_extras %}
+{% block 'content' %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">{{filtro.nome}}</div>
+            <div class="panel-body">
+                <table class="tablesaw table-hover table" data-tablesaw-mode="stack"  data-tablesaw-minimap>
+                    <thead>
+                        <tr>
+                            <th scope="col" style="text-transform:none">Número Externo</th>
+                            <th scope="col" style="text-transform:none">Tipo Movimento</th>
+                            <th scope="col" style="text-transform:none">Classe</th>
+                            <th scope="col" style="text-transform:none">Conteúdo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for documento in documentos %}
+                        <tr>
+                            <td class="title">{{documento.numero}}</td>
+                            <td style="white-space: nowrap;">{{documento.tipo_movimento}}</td>
+                            <td style="white-space: nowrap;">{{documento.classe_filtro|default_if_none:"-"}}</td>
+                            <td><a href="#" 
+                                data-toggle="modal" 
+                                data-target="#conteudo" 
+                                onclick="detalhar('{{documento.id}}')">
+                                    {{documento.conteudo|truncatewords:50}}
+                                </a>
+                                <div style="display:none" id="conteudo_{{documento.id}}">
+                                    {{documento.conteudo}}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if documentos.has_previous %}
+                            <a href="?page=1">&laquo; primeira</a>
+                            <a href="?page={{ documentos.previous_page_number }}">Anterior</a>
+                        {% endif %}
+                
+                        <span class="current">
+                            Página {{ documentos.number }} de {{ documentos.paginator.num_pages }}.
+                        </span>
+                
+                        {% if documentos.has_next %}
+                            <a href="?page={{ documentos.next_page_number }}">Próximo</a>
+                            <a href="?page={{ documentos.paginator.num_pages }}">último &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="conteudo" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="helparquivoLabel" aria-hidden="true" style="padding-right: 15px;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <div class="modal-body">
+                <pre style="text-transform: uppercase; text-align: justify; white-space: pre-line; word-break: unset;"
+                id="conteudofinal">
+                </pre>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info waves-effect" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const detalhar = iddocumento => {
+        let meupre = document.querySelector(`#conteudo_${iddocumento}`)
+        let conteudofinal = document.querySelector("#conteudofinal")
+        conteudofinal.innerHTML = meupre.innerHTML
+    }
+
+</script>
+
+{% endblock %}
