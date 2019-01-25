@@ -53,6 +53,10 @@ class ClasseFiltro(OrderedModel):
 
     class Meta(OrderedModel.Meta):
         pass
+    
+    def __str__(self):
+        if self:
+            return self.nome
 
 
 class ItemFiltro(models.Model):

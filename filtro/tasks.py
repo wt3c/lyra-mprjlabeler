@@ -8,6 +8,10 @@ from .models import (
     Filtro,
     Documento
 )
+from classificador_lyra.regex import (
+    classifica_item_sequencial,
+    constroi_classificador_dinamica
+)
 
 
 logger = logging.getLogger(__name__)
@@ -122,6 +126,7 @@ def montar_estrutura_filtro(m_filtro):
     for classe in m_filtro.classefiltro_set.all():
         pre_classe = {
             "nome":None,
+            "classe": classe,
             "parametros": {
                 "regex": [],
                 "regex_reforco": None,
@@ -131,7 +136,7 @@ def montar_estrutura_filtro(m_filtro):
             }
         }
 
-        pre_classe['nome'] = slugify(classe.nome)
+        pre_classe['nome'] = slugify(classe.nome).replace('-', '_')
         pre_classe['parametros']['regex'] = list(map(
             transforma_em_regex, filter(lambda x: x.tipo == '1', classe.itemfiltro_set.all())))
         pre_classe['parametros']['regex_reforco'] = list(map(
@@ -148,11 +153,40 @@ def montar_estrutura_filtro(m_filtro):
     return retorno
 
 
+def preparar_classificadores(estrutura):
+    return [
+        constroi_classificador_dinamica(item['nome'], item['parametros'])
+        for item in estrutura
+    ]
+
+
+def obtem_classe(classificacao, estrutura):
+    return next(
+        filter(
+            lambda x: x['nome'] == classificacao['classificacao'].__class__.__name__,
+            estrutura
+        )
+    )["classe"]
+
+
 @shared_task
 def classificar_baixados(idfiltro):
     logger.info('Classificando filtro %s' % idfiltro)
     m_filtro = Filtro.objects.get(pk=idfiltro)
 
+    # monta a estrutura de classificadores
     estrutura = montar_estrutura_filtro(m_filtro)
 
-    logger.info(estrutura)
+    # prepara os classificadores dinâmicos
+    classificadores = preparar_classificadores(estrutura)
+
+    # roda os classificadores por 
+    for documento in m_filtro.documento_set.all():
+        classificacao = classifica_item_sequencial(
+            documento.conteudo,
+            classificadores
+        )
+        if classificacao:
+            documento.classe_filtro = obtem_classe(classificacao, estrutura)
+            documento.save()
+        
