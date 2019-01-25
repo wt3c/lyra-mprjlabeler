@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def limpar_documentos(m_filtro):
-    m_filtro.documento_set.all().delete()
+    m_filtro.documento_set.clear()
 
 
 def parse_documentos(m_filtro):
