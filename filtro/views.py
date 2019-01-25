@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import (
     render,
     redirect,
@@ -261,7 +262,20 @@ def classificar(request, idfiltro):
 
     return redirect(
         reverse(
-            'filtros-filtro',
-            args=[idfiltro]
+            'filtros'
         )
+    )
+
+
+@login_required
+@require_http_methods(['GET'])
+def obter_situacao(request, idfiltro):
+    m_filtro = obter_filtro(idfiltro, request.user.username)
+
+    return JsonResponse(
+        {
+            'situacao': m_filtro.situacao,
+            'percentual': m_filtro.percentual_atual,
+            'descricao': m_filtro.get_situacao_display()
+        }
     )

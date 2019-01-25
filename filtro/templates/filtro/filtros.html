@@ -21,6 +21,7 @@
                                 <tr>
                                     <th>Nome</th>
                                     <th>Situação</th>
+                                    <th>Progresso</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
@@ -28,12 +29,38 @@
                                 {% for item in filtros %}
                                 <tr>
                                     <td>{{item.nome}}</td>
-                                    <td>{{item.get_situacao_display}}</td>
+                                    <td id="label_{{item.id}}">{{item.get_situacao_display}}</td>
+                                    <td>
+                                        <div class="progress progress-xs margin-vertical-10" id="progresso_{{item.id}}" style="display:none;">
+                                            <div class="progress-bar progress-bar-danger" id="barra_{{item.id}}"></div>
+                                        </div>
+                                    </td>
                                     <td class="text-nowrap">        
                                         <a href="{% url 'filtros-filtro' item.id %}" data-toggle="tooltip" data-original-title="Editar"><i class="fa fa-pencil text-inverse m-r-10"></i></a>
-                                        <a href="#" data-toggle="modal" data-target="#confirmarexclusaomodal" data-original-title="Excluir" onclick="atualizar_filtro_exclusao('{{item.id}}', '{{item.nome}}')"><i class="fa fa-close text-danger m-r-10"></i></a>
-                                        <a href="#" data-toggle="tooltip" data-original-title="Executar Filtro"> <i class="fa fa-bolt text-success m-r-10"></i> </a>
-                                        <a href="#" data-toggle="tooltip" data-original-title="Baixar Resultados"> <i class="fa fa-download text-warning m-r-10"></i></a>
+
+                                        <a href="#" data-toggle="modal" data-target="#confirmarexclusaomodal" data-original-title="Excluir" 
+                                            onclick="atualizar_filtro_exclusao('{{item.id}}', '{{item.nome}}')">
+                                            <i class="fa fa-close text-danger m-r-10"></i>
+                                        </a>
+
+                                        <a href='{% url "filtros-classificar" item.id %}'
+                                            id="btnexecutar_{{item.id}}"
+                                            data-toggle="tooltip" data-original-title="Executar Filtro"> 
+                                            <i class="fa fa-bolt text-success m-r-10"></i>
+                                        </a>
+
+                                        <a href="#"
+                                            id="btnbaixar_{{item.id}}" 
+                                            data-toggle="tooltip" data-original-title="Baixar Resultados" 
+                                            style="display:none;"> <i class="fa fa-download text-warning m-r-10"></i>
+                                        </a>
+
+                                        <a href="#"
+                                            id="btncompactar_{{item.id}}" 
+                                            data-toggle="tooltip" data-original-title="Compactar Resultados" 
+                                            style="display:none;"> <i class="fa fa-download text-warning m-r-10"></i>
+                                        </a>
+
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -45,6 +72,79 @@
         </div>
     </div>
 </div>
+
+<script>
+    const atualiza_situacao = (id, conteudo) => {
+        let resposta = JSON.parse(conteudo.response)
+        console.log(resposta)
+        let meuprogresso = document.querySelector(`#progresso_${id}`)
+        let minhabarra = document.querySelector(`#barra_${id}`)
+        let meulabel = document.querySelector(`#label_${id}`)
+        let btnexecutar = document.querySelector(`#btnexecutar_${id}`)
+        let btnbaixar = document.querySelector(`#btnbaixar_${id}`)
+        let btncompactar = document.querySelector(`#btncompactar_${id}`)
+        let situacoes = {
+            '2': 'danger',
+            '4': 'warning',
+            '6': 'success',
+        }
+
+        meulabel.innerHTML = resposta.descricao
+        meuprogresso.style.display = 'none'
+        btnexecutar.style.display = 'none'
+        btnbaixar.style.display = 'none'
+        btncompactar.style.display = 'none'
+
+        if( situacoes[resposta.situacao] ) {
+            meuprogresso.style.display = 'block'
+            minhabarra.style.width = resposta.percentual + '%'
+            minhabarra.class = `progress-bar progress-bar-${situacoes[resposta.situacao]}`
+            return
+        }
+        if( ! situacoes[resposta.situacao] ) {
+            btnexecutar.style.display = 'inline'
+            return
+        }
+        if( resposta.situacao == '7' ) {
+            btnexecutar.style.display = 'inline'
+            return
+        }
+        if( resposta.situacao == '5' ) {
+            btnexecutar.style.display = 'inline'
+            return
+        }
+    }
+
+    const baixaSituacao = (id, url) => {
+        let xhr = new XMLHttpRequest();
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                atualiza_situacao(id, xhr)
+            } else {
+                console.log('The request failed!');
+            }
+        };
+
+        xhr.open('GET', url)
+        xhr.send()
+    }
+
+    const baixaSituacoes = () => {filtros_url.forEach(filtro=>{baixaSituacao(filtro.id, filtro.url)})}
+    
+    let filtros_url = [
+        {% for item in filtros%}
+            {
+                id: {{item.id}},
+                url: '{% url 'filtros-obter-situacao' item.id %}'
+            },
+        {% endfor %}
+    ]
+
+    baixaSituacoes()
+
+    setInterval(baixaSituacoes, 1000)
+
+</script>
 
 <!-- adicionar filtro modal -->
 {%include 'filtro/componentes/modal_adicionarfiltro.html'%}

@@ -23,6 +23,9 @@ def submeter_classificacao(idfiltro):
     logger.info('Processando filtro %s' % idfiltro)
     m_filtro = Filtro.objects.get(pk=idfiltro)
 
+    if m_filtro.situacao in '24':
+        return
+
     m_filtro.situacao = '2'  # baixando
     m_filtro.save()
 
@@ -38,7 +41,16 @@ def submeter_classificacao(idfiltro):
     numeros_documentos = parse_documentos(m_filtro)
 
     # Baixa os processos
-    processos = download_processos(numeros_documentos)
+    processos = []
+    contador = 0
+    logger.info('Vou baixar %s documentos' % len(numeros_documentos))
+    for processo in download_processos(numeros_documentos):
+        processos.append(processo)
+        contador += 1
+        logger.info('Passo %s' % contador)
+        m_filtro.percentual_atual = contador / len(numeros_documentos) * 100
+        logger.info('Percentual %s' % m_filtro.percentual_atual)
+        m_filtro.save()
 
     # Parse de Documentos
     pre_documentos = []
@@ -50,11 +62,22 @@ def submeter_classificacao(idfiltro):
 
     obtem_documentos_finais(pre_documentos, m_filtro)
 
+    m_filtro.situacao = '3'
+    m_filtro.save()
+
+    classificar_baixados.delay(idfiltro)
+
 
 @shared_task
 def classificar_baixados(idfiltro):
     logger.info('Classificando filtro %s' % idfiltro)
     m_filtro = Filtro.objects.get(pk=idfiltro)
+
+    if m_filtro.situacao in '24':
+        return
+
+    m_filtro.situacao = '4'
+    m_filtro.save()
 
     # monta a estrutura de classificadores
     estrutura = montar_estrutura_filtro(m_filtro)
@@ -71,3 +94,6 @@ def classificar_baixados(idfiltro):
         if classificacao:
             documento.classe_filtro = obtem_classe(classificacao, estrutura)
             documento.save()
+
+    m_filtro.situacao = '5'
+    m_filtro.save()

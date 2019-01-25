@@ -1,8 +1,13 @@
+import logging
 import re
 from classificador_lyra.regex import constroi_classificador_dinamica
 from processostjrj.mni import consulta_processo, cria_cliente
 from slugify import slugify
 from filtro.models import Documento
+from celery.contrib import rdb
+
+
+logger = logging.getLogger(__name__)
 
 
 def limpar_documentos(m_filtro):
@@ -19,6 +24,8 @@ def parse_documentos(m_filtro):
 def download_processos(documentos):
     cliente = cria_cliente()
     for numero in documentos:
+        if not numero:
+            continue
         processo = consulta_processo(
             cliente,
             numero.strip(),

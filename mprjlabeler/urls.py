@@ -31,6 +31,7 @@ from filtro.views import (
     adicionar_itemfiltro,
     excluir_item_filtro,
     classificar,
+    obter_situacao,
 )
 
 
@@ -99,6 +100,11 @@ urlpatterns = [
         'filtros/classificar-filtro/<int:idfiltro>',
         classificar,
         name='filtros-classificar'
+    ),
+    path(
+        'filtros/obter-situacao-filtro/<int:idfiltro>',
+        obter_situacao,
+        name='filtros-obter-situacao'
     ),
 ] + static(
     settings.STATIC_URL,
