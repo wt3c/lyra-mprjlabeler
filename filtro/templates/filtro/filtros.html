@@ -49,18 +49,20 @@
                                             <i class="fa fa-bolt text-success m-r-10"></i>
                                         </a>
 
+                                        <a href="{% url "filtros-compactar-resultado" item.id %}"
+                                            id="btncompactar_{{item.id}}" 
+                                            data-toggle="tooltip" data-original-title="Compactar Resultados" 
+                                            style="display:none;"> 
+                                            <i class="fa fa-file-zip-o text-warning m-r-10"></i>
+                                        </a>    
+
                                         <a href="#"
                                             id="btnbaixar_{{item.id}}" 
                                             data-toggle="tooltip" data-original-title="Baixar Resultados" 
                                             style="display:none;"> <i class="fa fa-download text-warning m-r-10"></i>
                                         </a>
 
-                                        <a href="#"
-                                            id="btncompactar_{{item.id}}" 
-                                            data-toggle="tooltip" data-original-title="Compactar Resultados" 
-                                            style="display:none;"> 
-                                            <i class="fa fa-file-zip-o text-warning m-r-10"></i>
-                                        </a>
+
 
                                         <a href="{% url 'filtros-visualizar-resultado' item.id %}"
                                             id="btnvisualizar_{{item.id}}" 
@@ -117,12 +119,16 @@
         if( resposta.situacao == '7' ) {
             btnexecutar.style.display = 'inline'
         }
-        if( resposta.situacao == '5' ) {
+        if( resposta.situacao >= '5' && resposta.situacao != '6') {
             btncompactar.style.display = 'inline'
         }
         if( resposta.situacao >= 5) {
             btnvisualizar.style.display = 'inline'
         }
+        if( resposta.disponivel ) {
+            btnbaixar.style.display = 'inline'
+            btnbaixar.href = resposta.disponivel
+        } else { btnbaixar.href = '#'}
     }
 
     const baixaSituacao = (id, url) => {

@@ -22,6 +22,7 @@ from .models import (
 )
 from .tasks import (
     submeter_classificacao,
+    compactar,
 )
 
 
@@ -277,7 +278,8 @@ def obter_situacao(request, idfiltro):
         {
             'situacao': m_filtro.situacao,
             'percentual': m_filtro.percentual_atual,
-            'descricao': m_filtro.get_situacao_display()
+            'descricao': m_filtro.get_situacao_display(),
+            'disponivel': m_filtro.saida.url if m_filtro.saida.name else None
         }
     )
 
@@ -300,4 +302,22 @@ def listar_resultados(request, idfiltro):
             'documentos': documentos,
             'filtro': m_filtro
         }
+    )
+
+
+@login_required
+@require_http_methods(['GET'])
+def executar_compactacao(request, idfiltro):
+    compactar.delay(idfiltro)
+
+    messages.info(
+        request,
+        ('Filtro submetido para compactação! Acompanhe o '
+         'andamento pela tela de gestão dos filtros.')
+    )
+
+    return redirect(
+        reverse(
+            'filtros'
+        )
     )

@@ -1,5 +1,6 @@
 from django.db import models
 from ordered_model.models import OrderedModel
+from .storages import OverwriteStorage
 
 
 SITUACOES_FILTRO = (
@@ -39,7 +40,7 @@ class Filtro(models.Model):
         choices=SITUACOES_FILTRO,
         default='1'
     )
-    saida = models.FileField(null=True, blank=True)
+    saida = models.FileField(null=True, blank=True, storage=OverwriteStorage())
     responsavel = models.CharField(max_length=50, default='')
     percentual_atual = models.FloatField(null=True, blank=True)
 

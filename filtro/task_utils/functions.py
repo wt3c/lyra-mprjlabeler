@@ -4,7 +4,6 @@ from classificador_lyra.regex import constroi_classificador_dinamica
 from processostjrj.mni import consulta_processo, cria_cliente
 from slugify import slugify
 from filtro.models import Documento
-from celery.contrib import rdb
 
 
 logger = logging.getLogger(__name__)
@@ -38,7 +37,7 @@ def download_processos(documentos):
 def parse_documento(params):
     tipos_movimento, processo = params
     retorno = []
-    if 'movimento' not in processo.processo:
+    if (not processo.sucesso or not processo.processo or 'movimento' not in processo.processo):
         return retorno
 
     for tipo in tipos_movimento:

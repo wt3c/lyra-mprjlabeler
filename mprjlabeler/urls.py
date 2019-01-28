@@ -33,6 +33,7 @@ from filtro.views import (
     classificar,
     obter_situacao,
     listar_resultados,
+    executar_compactacao,
 )
 
 
@@ -111,6 +112,11 @@ urlpatterns = [
         'filtros/visualizar-resultado-filtro/<int:idfiltro>',
         listar_resultados,
         name='filtros-visualizar-resultado'
+    ),
+    path(
+        'filtros/compactar-resultado-filtro/<int:idfiltro>',
+        executar_compactacao,
+        name='filtros-compactar-resultado'
     ),
 ] + static(
     settings.STATIC_URL,
