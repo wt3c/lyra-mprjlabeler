@@ -1,7 +1,11 @@
+import os
 from django.contrib import messages
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.utils.encoding import smart_str
+from django.http import JsonResponse, StreamingHttpResponse
+from wsgiref.util import FileWrapper
 from django.shortcuts import (
     render,
     redirect,
@@ -321,3 +325,16 @@ def executar_compactacao(request, idfiltro):
             'filtros'
         )
     )
+
+
+@login_required
+@require_http_methods(['GET'])
+def mediaview(request, mediafile):
+    del request
+    fullfile = os.path.join(settings.MEDIA_ROOT, mediafile)
+    response = StreamingHttpResponse(
+        FileWrapper(open(fullfile, 'rb'), 8192)
+    )
+    response['Content-Disposition'] = 'attachment; filename=%s' % mediafile
+    response['X-Sendfile'] = smart_str(fullfile)
+    return response

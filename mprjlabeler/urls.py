@@ -34,6 +34,7 @@ from filtro.views import (
     obter_situacao,
     listar_resultados,
     executar_compactacao,
+    mediaview,
 )
 
 
@@ -118,16 +119,16 @@ urlpatterns = [
         executar_compactacao,
         name='filtros-compactar-resultado'
     ),
-]
+    path(
+        'media/<str:mediafile>',
+        mediaview,
+    )
+] + static(
+    settings.STATIC_URL,
+    document_root=settings.STATIC_ROOT
+)
 
 if settings.DEBUG:
-    urlpatterns.append(
-        static(
-            settings.STATIC_URL,
-            document_root=settings.STATIC_ROOT
-        )
-    )
-
     urlpatterns.append(
         static(
             settings.MEDIA_URL,
