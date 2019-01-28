@@ -37,7 +37,9 @@ def download_processos(documentos):
 def parse_documento(params):
     tipos_movimento, processo = params
     retorno = []
-    if (not processo.sucesso or not processo.processo or 'movimento' not in processo.processo):
+    if (not processo.sucesso or
+            not processo.processo or
+            'movimento' not in processo.processo):
         return retorno
 
     for tipo in tipos_movimento:
