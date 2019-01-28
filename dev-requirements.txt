@@ -9,3 +9,4 @@ yapf==0.20.2
 flake8==3.5.0
 httmock==1.2.6
 coverage==4.5.1
+django-livereload-server==0.3.2

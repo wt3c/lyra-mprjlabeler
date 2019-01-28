@@ -6,7 +6,7 @@ function ctrl_c() {
 
 python manage.py livereload --settings=mprjlabeler.settings_dev &
 LIVERELOAD_PID=$!
-python manage.py runserver --settings=mprjlabeler.settings_dev &
+python manage.py runserver 0.0.0.0:8080 --settings=mprjlabeler.settings_dev &
 MANAGE_PID=$!
 
 trap ctrl_c INT

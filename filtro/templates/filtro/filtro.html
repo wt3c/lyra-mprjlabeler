@@ -36,7 +36,7 @@
                             <span class="input-group-addon btn btn-default btn-file">
                                 <span class="fileinput-new">Selecionar Arquivo</span> 
                                 <span class="fileinput-exists">Alterar</span>
-                                <input type="file" name="arquivo_documentos">
+                                <input type="file" name="filtro-arquivo_documentos">
                             </span> 
                             <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remover</a>
                         </div>
@@ -66,6 +66,12 @@
                     <i class="fa fa-plus m-r-10"></i>
                     Adicionar Classe de Filtro
                 </button>
+                <a type="button" 
+                    href='{% url "filtros-classificar" idfiltro %}'
+                    class="btn btn-warning waves-effect waves-light m-r-10"> 
+                        <i class="fa fa-plus m-r-10"></i>
+                        Submeter para Classificação
+                </a>
             </div>
 
         </div>

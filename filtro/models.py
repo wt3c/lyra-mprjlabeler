@@ -1,14 +1,16 @@
 from django.db import models
 from ordered_model.models import OrderedModel
+from .storages import OverwriteStorage
 
 
 SITUACOES_FILTRO = (
     ('1', 'Em Criação'),
     ('2', 'Baixando Documentos'),
-    ('3', 'Executando Filtros'),
-    ('4', 'Documentos Classificados'),
-    ('5', 'Compactando'),
-    ('6', 'Download Disponível')
+    ('3', 'Documentos Baixados'),
+    ('4', 'Executando Filtros'),
+    ('5', 'Documentos Classificados'),
+    ('6', 'Compactando'),
+    ('7', 'Download Disponível')
 )
 
 TIPOS_FILTRO = (
@@ -38,8 +40,9 @@ class Filtro(models.Model):
         choices=SITUACOES_FILTRO,
         default='1'
     )
-    saida = models.FileField(null=True, blank=True)
+    saida = models.FileField(null=True, blank=True, storage=OverwriteStorage())
     responsavel = models.CharField(max_length=50, default='')
+    percentual_atual = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         if self:
@@ -54,6 +57,10 @@ class ClasseFiltro(OrderedModel):
     class Meta(OrderedModel.Meta):
         pass
 
+    def __str__(self):
+        if self:
+            return self.nome
+
 
 class ItemFiltro(models.Model):
     classe_filtro = models.ForeignKey('ClasseFiltro', on_delete=models.CASCADE)
@@ -63,12 +70,13 @@ class ItemFiltro(models.Model):
 
 
 class Documento(models.Model):
-    filtro = models.ForeignKey(
+    classe_filtro = models.ForeignKey(
         'ClasseFiltro',
         blank=True,
         null=True,
         on_delete=models.CASCADE
     )
+    filtro = models.ForeignKey('Filtro', on_delete=models.CASCADE)
     numero = models.CharField(max_length=32)
     tipo_movimento = models.ForeignKey(
         'TipoMovimento',

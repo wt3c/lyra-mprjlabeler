@@ -1,5 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.http import JsonResponse
 from django.shortcuts import (
     render,
     redirect,
@@ -17,6 +19,10 @@ from .models import (
     Filtro,
     ClasseFiltro,
     ItemFiltro
+)
+from .tasks import (
+    submeter_classificacao,
+    compactar,
 )
 
 
@@ -78,6 +84,7 @@ def filtro(request, idfiltro):
             request.FILES,
             instance=m_filtro
         )
+        form.is_valid()
         form.save()
 
         messages.success(request, "Filtro salvo!")
@@ -240,5 +247,77 @@ def excluir_item_filtro(request, idfiltro, iditemfiltro):
         reverse(
             'filtros-filtro',
             args=[idfiltro]
+        )
+    )
+
+
+@login_required
+@require_http_methods(['GET'])
+def classificar(request, idfiltro):
+    submeter_classificacao.delay(idfiltro)
+
+    messages.info(
+        request,
+        ('Filtro submetido para classificação! Acompanhe o '
+         'andamento pela tela de gestão dos filtros.')
+    )
+
+    return redirect(
+        reverse(
+            'filtros'
+        )
+    )
+
+
+@login_required
+@require_http_methods(['GET'])
+def obter_situacao(request, idfiltro):
+    m_filtro = obter_filtro(idfiltro, request.user.username)
+
+    return JsonResponse(
+        {
+            'situacao': m_filtro.situacao,
+            'percentual': m_filtro.percentual_atual,
+            'descricao': m_filtro.get_situacao_display(),
+            'disponivel': m_filtro.saida.url if m_filtro.saida.name else None
+        }
+    )
+
+
+@login_required
+@require_http_methods(['GET'])
+def listar_resultados(request, idfiltro):
+    m_filtro = obter_filtro(idfiltro, request.user.username)
+
+    documentos = m_filtro.documento_set.all()
+    paginator = Paginator(documentos, 25)
+
+    page = request.GET.get('page', 1)
+    documentos = paginator.get_page(page)
+
+    return render(
+        request,
+        'filtro/resultados.html',
+        {
+            'documentos': documentos,
+            'filtro': m_filtro
+        }
+    )
+
+
+@login_required
+@require_http_methods(['GET'])
+def executar_compactacao(request, idfiltro):
+    compactar.delay(idfiltro)
+
+    messages.info(
+        request,
+        ('Filtro submetido para compactação! Acompanhe o '
+         'andamento pela tela de gestão dos filtros.')
+    )
+
+    return redirect(
+        reverse(
+            'filtros'
         )
     )
