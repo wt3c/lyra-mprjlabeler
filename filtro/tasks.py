@@ -135,7 +135,7 @@ def compactar(idfiltro):
     qtd_documentos = documentos.count()
 
     # cria o streamfile em disco
-    nometar = f'{slug_classificador}.tar.bz2'
+    nometar = '%s.tar.bz2' % slug_classificador
 
     numeros_documentos = defaultdict(int)
 
@@ -165,7 +165,12 @@ def compactar(idfiltro):
                 tipo = slugify(documento.tipo_movimento.nome)
 
                 tarinfo = TarInfo(
-                    name=f'{classe}/{tipo}-{numero}-{ordem}.txt'
+                    name='%s/%s-%s-%s.txt' % (
+                        classe,
+                        tipo,
+                        numero,
+                        ordem
+                    )
                 )
                 tarinfo.size = len(conteudo_documento.getvalue())
                 conteudo_documento.seek(0)
