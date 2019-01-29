@@ -9,6 +9,11 @@ from .forms import RespostaForm
 
 
 @login_required
+def index(request):
+    return render(request, 'labeler/index.html')
+
+
+@login_required
 def campanhas(request):
     "View para retornar lista de Campanhas"
     campanhas_ativas = Campanha.objects.filter(ativa=True)

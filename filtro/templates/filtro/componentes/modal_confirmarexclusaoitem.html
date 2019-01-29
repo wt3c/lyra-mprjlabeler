@@ -1,0 +1,31 @@
+<div class="modal fade" 
+        id="confirmarexclusaoitemfiltromodal"
+        tabindex="-1" role="dialog" 
+        aria-labelledby="confirmarexclusaoitemfiltrolabel" 
+        aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title text-danger" id="confirmarexclusaoitemfiltrolabel">Atenção!</h4> 
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza de que deseja excluir este Termo de Busca?</p>
+                <p>Não é possível desfazer esta ação!</p>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="idfiltro" name="idfiltro">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <a href="#" id="btnexcluiritemfiltro" class="btn btn-danger">Excluir</a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<script>
+    const excluiritemfiltro = (link) => {
+        document.querySelector("#btnexcluiritemfiltro").href = link
+    }
+</script>

@@ -1,0 +1,197 @@
+{% extends 'labeler/index.html' %}
+{% load tags_extras %}
+{% block 'content' %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="white-box">
+            <form class="form-horizontal" 
+                method="post" 
+                action="{% url 'filtros-filtro' form.instance.id %}"
+                enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-md-12">Nome</label>
+                    <div class="col-md-12">
+                        {{form.nome}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-12">Tipos de Movimento</label>
+                    <div class="col-md-12">
+                        {{form.tipos_movimento}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-12">
+                        Lista de Processos 
+                        <a href="#" data-toggle="modal" data-target="#helparquivo">
+                            <i class="fa fa-question text-info m-r-10"></i>
+                        </a>
+                    </label>
+                    <div class="col-md-12">
+                        <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                            <div class="form-control" data-trigger="fileinput"> <i class="glyphicon glyphicon-file fileinput-exists"></i>
+                                <span class="fileinput-filename"></span>
+                            </div>
+                            <span class="input-group-addon btn btn-default btn-file">
+                                <span class="fileinput-new">Selecionar Arquivo</span> 
+                                <span class="fileinput-exists">Alterar</span>
+                                <input type="file" name="filtro-arquivo_documentos">
+                            </span> 
+                            <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remover</a>
+                        </div>
+                        {% if model.arquivo_documentos %}
+                        <div class="text-right">
+                            <a 
+                                class="btn btn-outline btn-info btn-default waves-effect waves-light"
+                                href="{{ model.arquivo_documentos.url }}"
+                                target="_blank">
+                                    <i class="fa fa-download text-info m-r-10"></i>{{model.arquivo_documentos.name}}
+                                </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="text-right">
+                    <button type="submit" class="btn btn-info waves-effect waves-light m-r-10">Salvar</button>
+                    <a  href="{% url 'filtros' %}" class="btn btn-inverse waves-effect waves-light">Voltar</a>
+                </div>
+            </form>
+            <div>
+                <button type="button" 
+                class="btn btn-success waves-effect waves-light m-r-10"
+                data-toggle="modal"
+                data-target="#adicionarClasseModal"
+                onclick='adicionarClasse();'> 
+                    <i class="fa fa-plus m-r-10"></i>
+                    Adicionar Classe de Filtro
+                </button>
+                <a type="button" 
+                    href='{% url "filtros-classificar" idfiltro %}'
+                    class="btn btn-warning waves-effect waves-light m-r-10"> 
+                        <i class="fa fa-plus m-r-10"></i>
+                        Submeter para Classificação
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- classes -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading"><i class="ti-settings"></i> Classes de Filtros</div>
+            <div class="white-box user-table">
+                {% for classe in model.classefiltro_set.all %}
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3 class="box-title">
+                            {{classe.nome}} 
+                            <a href="#" 
+                            style="color: white;" 
+                            title="Adicionar Termos de Busca"
+                            data-toggle="modal"
+                            data-target="#adicionarItemFiltroModal"
+                            onclick="adicionaritemfiltro({{classe.id}})">
+                                <i class="fa fa-plus text-success m-r-10"></i>    
+                            </a>
+                        </h3>
+                    </div>
+                    <div class="col-sm-6" style='text-align: right;'>
+                        <h3>
+                        <a href="#" data-toggle="modal"
+                            data-target="#adicionarClasseModal"
+                            onclick='alterarClasse("{{classe.id}}", "{{classe.nome}}");'
+                            title="Alterar Nome da Classe">
+                            <i class="fa fa-pencil text-info m-r-10"></i>
+                        </a>
+                        <a href="{% url 'filtros-mover-classe' idfiltro classe.id 'abaixo' %}" title="Mover Abaixo">
+                            <i class="fa fa-level-down text-info m-r-10"></i>
+                        </a>
+                        <a href="{% url 'filtros-mover-classe' idfiltro classe.id 'acima' %}" title="Mover Acima">
+                            <i class="fa fa-level-up text-info m-r-10"></i>
+                        </a>
+                        <a href="#" data-toggle="modal"
+                            data-target="#confirmarexclusaoclassemodal"
+                            onclick='excluirclasse("{{classe.nome}}", "{% url 'filtros-excluir-classe' idfiltro classe.id %}");'
+                            title="Excluir Classe">
+                            <i class="fa fa-trash text-danger m-r-10"></i>
+                        </a>
+                    </h3>
+                    </div>
+                </div>
+ 
+                <div class="row table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width:45%">Termos</th>
+                                <th style="width:45%">Tipo</th>
+                                <th style="width:5%">RegEx</th>
+                                <th class="text-nowrap" style="width:5%">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in classe.itemfiltro_set.all %}
+                            <tr>
+                                <td>{{item.termos}}</td>
+                                <td>{{item.get_tipo_display}}</td>
+                                <td class="text-nowrap">
+                                    {% if item.regex %}
+                                        Sim
+                                    {% else %}
+                                        Não
+                                    {% endif %}
+                                </td>
+                                <td class="text-nowrap">
+                                    <a href="#" 
+                                        title="Alterar Termos de Busca"
+                                        data-toggle="modal"
+                                        data-target="#adicionarItemFiltroModal"
+                                        onclick="alteraritemfiltro({{classe.id}}, {{item.id}}, '{{item.termos}}', '{{item.tipo}}', '{{item.regex}}' )">
+                                        <i class="fa fa-pencil text-inverse m-r-10"></i>
+                                    </a>
+                                    <a href="#" 
+                                        title="Excluir Termos de Busca"
+                                        data-toggle="modal"
+                                        data-target="#confirmarexclusaoitemfiltromodal"
+                                        onclick="excluiritemfiltro('{% url 'filtros-excluir-itemfiltro' idfiltro item.id %}')">
+                                        <i class="fa fa-close text-danger m-r-10"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Help Arquivo Modal-->
+{%include 'filtro/componentes/modal_helparquivo.html' %}
+
+<!-- Adicionar Classe Modal-->
+{%include 'filtro/componentes/modal_adicionarclasse.html' %}
+
+<!-- Excluir Classe Modal -->
+{%include 'filtro/componentes/modal_confirmarexclusaoclasse.html' %}
+
+<!-- adicionar item de filtro modal -->
+{%include 'filtro/componentes/modal_adicionaritemfiltro.html'  %}
+
+
+<!-- Excluir Item de Filtro Modal-->
+{%include 'filtro/componentes/modal_confirmarexclusaoitem.html'  %}
+
+
+<script>
+
+</script>
+
+{% endblock %}
