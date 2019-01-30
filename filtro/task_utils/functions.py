@@ -25,12 +25,16 @@ def download_processos(documentos):
     for numero in documentos:
         if not numero:
             continue
-        processo = consulta_processo(
-            cliente,
-            numero.strip(),
-            movimentos=True,
-            _value_1=[{"incluirCabecalho": True}]
-        )
+        try:
+            processo = consulta_processo(
+                cliente,
+                numero.strip(),
+                movimentos=True,
+                _value_1=[{"incluirCabecalho": True}]
+            )
+        except Exception as error:
+            logger.error('Erro no download do processo %s' % numero, error)
+            continue
         yield processo
 
 
