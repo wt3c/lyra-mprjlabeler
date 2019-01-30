@@ -28,7 +28,7 @@ def download_processos(documentos):
         try:
             processo = consulta_processo(
                 cliente,
-                numero.strip(),
+                numero.strip().zfill(20),
                 movimentos=True,
                 _value_1=[{"incluirCabecalho": True}]
             )
