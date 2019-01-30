@@ -148,11 +148,9 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-
-CELERY_BROKER_URL=os.environ["CELERY_URL"]
-# QUEUE=os.environ["QUEUE"]
+CELERY_BROKER_URL = os.environ["CELERY_URL"]
+CELERY_TASK_QUEUE = os.environ["CELERY_QUEUE"]
 
 
 if "AMBIENTE" in os.environ and os.environ["AMBIENTE"] == "producao":
-    # Parametros para rodar no heroku
     DEBUG = False
