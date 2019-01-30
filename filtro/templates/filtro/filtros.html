@@ -31,8 +31,8 @@
                                     <td>{{item.nome}}</td>
                                     <td id="label_{{item.id}}">{{item.get_situacao_display}}</td>
                                     <td>
-                                        <div class="progress progress-xs margin-vertical-10" id="progresso_{{item.id}}" style="display:none;">
-                                            <div class="progress-bar progress-bar-danger" id="barra_{{item.id}}"></div>
+                                        <div class="progress progress-lg margin-vertical-10" id="progresso_{{item.id}}" style="display:none;">
+                                            <div class="progress-bar progress-bar-danger active progress-bar-striped" id="barra_{{item.id}}"></div>
                                         </div>
                                     </td>
                                     <td class="text-nowrap">        
@@ -110,7 +110,8 @@
         if( situacoes[resposta.situacao] ) {
             meuprogresso.style.display = 'block'
             minhabarra.style.width = resposta.percentual + '%'
-            minhabarra.class = `progress-bar progress-bar-${situacoes[resposta.situacao]}`
+            minhabarra.innerHTML = parseFloat(resposta.percentual, 10).toFixed(3) + '%'
+            minhabarra.class = `progress-bar active progress-bar-striped progress-bar-${situacoes[resposta.situacao]}`
         }
         if( ! situacoes[resposta.situacao] ) {
             btnexecutar.style.display = 'inline'
