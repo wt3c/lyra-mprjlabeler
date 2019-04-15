@@ -3,6 +3,8 @@ from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Count
+from django.db import connection
 from django.utils.encoding import smart_str
 from django.http import JsonResponse, StreamingHttpResponse
 from wsgiref.util import FileWrapper
@@ -43,6 +45,15 @@ def obter_filtros(username):
     )
 
 
+def dictfetchall(cursor):
+    "Return all rows from a cursor as a dict"
+    columns = [col[0] for col in cursor.description]
+    return [
+        dict(zip(columns, row))
+        for row in cursor.fetchall()
+    ]
+
+
 @login_required
 def filtros(request):
     novo_filtro_form = AdicionarFiltroForm
@@ -55,6 +66,28 @@ def filtros(request):
             'novofiltroform': novo_filtro_form
         }
     )
+
+
+def obter_contadores_filtro(filtro):
+    query = """select
+        case when filtro_classefiltro.nome is null then 'Sem Classificação'
+        else filtro_classefiltro.nome end nomeclasse,
+        classe,
+        count(classe) total
+        from (
+        SELECT
+        case when classe_filtro_id is null then 0
+        else classe_filtro_id end classe
+        FROM filtro_documento
+        WHERE "filtro_documento"."filtro_id" = %s) tabela
+        left join filtro_classefiltro on
+        tabela.classe = filtro_classefiltro.id
+        GROUP BY nomeclasse, classe
+        ORDER BY "total" desc"""
+
+    with connection.cursor() as cursor:
+        cursor.execute(query, [filtro.id])
+        return dictfetchall(cursor)
 
 
 @login_required
@@ -293,7 +326,33 @@ def obter_situacao(request, idfiltro):
 def listar_resultados(request, idfiltro):
     m_filtro = obter_filtro(idfiltro, request.user.username)
 
-    documentos = m_filtro.documento_set.all()
+    classe = request.GET.get('classe', 'T')
+
+    sumario = m_filtro.documento_set.all().values(
+        'classe_filtro__nome').annotate(
+        total=Count('classe_filtro__nome')).order_by(
+        '-total')
+
+    documentos = m_filtro.documento_set
+
+    sumario = obter_contadores_filtro(m_filtro)
+
+    total_classificados = documentos.all().exclude(
+        classe_filtro=None).count()
+    total_documentos = documentos.all().count()
+
+    for item in sumario:
+        item['percentual_classe'] = (item['total'] * 100.0)/total_classificados
+        item['percentual_total'] = (item['total'] * 100.0)/total_documentos
+
+    if classe == 'T':
+        documentos = documentos.all()
+    elif classe == '0':
+        documentos = documentos.filter(classe_filtro__isnull=True)
+    else:
+        documentos = documentos.filter(classe_filtro=classe).all()
+
+    total = documentos.count()
     paginator = Paginator(documentos, 25)
 
     page = request.GET.get('page', 1)
@@ -304,7 +363,12 @@ def listar_resultados(request, idfiltro):
         'filtro/resultados.html',
         {
             'documentos': documentos,
-            'filtro': m_filtro
+            'filtro': m_filtro,
+            'sumario': sumario,
+            'total_classificados': total_classificados,
+            'total_documentos': total_documentos,
+            'total': total,
+            'classe': classe
         }
     )
 
