@@ -16,6 +16,12 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-md-12">Tipo de Raspador</label>
+                    <div class="col-md-12">
+                        {{form.tipo_raspador}}
+                    </div>
+                </div>
+                <div class="form-group" id='fgpTiposMovimento'>
                     <label class="col-md-12">Tipos de Movimento</label>
                     <div class="col-md-12">
                         {{form.tipos_movimento}}
@@ -23,8 +29,8 @@
                 </div>
                 <div class="form-group">
                     <label class="col-md-12">
-                        Lista de Processos 
-                        <a href="#" data-toggle="modal" data-target="#helparquivo">
+                        <label id='lblArquivo'>Lista de Processos</label>
+                        <a href="#" data-toggle="modal" data-target="#helparquivo" id="icoHelpArquivo">
                             <i class="fa fa-question text-info m-r-10"></i>
                         </a>
                     </label>
@@ -172,9 +178,11 @@
     </div>
 </div>
 
-
 <!-- Help Arquivo Modal-->
 {%include 'filtro/componentes/modal_helparquivo.html' %}
+
+<!-- Help Arquivo Tabulado Modal-->
+{%include 'filtro/componentes/modal_helparquivotabulado.html' %}
 
 <!-- Adicionar Classe Modal-->
 {%include 'filtro/componentes/modal_adicionarclasse.html' %}
@@ -185,13 +193,34 @@
 <!-- adicionar item de filtro modal -->
 {%include 'filtro/componentes/modal_adicionaritemfiltro.html'  %}
 
-
 <!-- Excluir Item de Filtro Modal-->
 {%include 'filtro/componentes/modal_confirmarexclusaoitem.html'  %}
 
+{% endblock %}
 
+{% block extrascripts %}
 <script>
+    const alterarTipoRaspador = () => {
+        const valor = document.querySelector('#{{form.tipo_raspador.auto_id}}').value
+        const fgpTiposMovimento = document.querySelector('#fgpTiposMovimento')
+        const lblArquivo = document.querySelector('#lblArquivo')
+        const $icoHelpArquivo = $('#icoHelpArquivo')
 
+        if(valor == 1) { // TJRJ 
+            fgpTiposMovimento.style.display = 'block'
+            lblArquivo.innerHTML = "Lista de Processos"
+            $icoHelpArquivo.attr('data-target', "#helparquivo")
+        }
+        else if(valor == 2) { // Arquivo Tabulado
+            fgpTiposMovimento.style.display = 'none'
+            lblArquivo.innerHTML = "Arquivo Tabulado"
+            $icoHelpArquivo.attr('data-target', "#helparquivotabulado")
+        }
+    }
+
+    $('#{{form.tipo_raspador.auto_id}}').on('changed.bs.select', alterarTipoRaspador)
+
+    alterarTipoRaspador()
 </script>
 
 {% endblock %}
