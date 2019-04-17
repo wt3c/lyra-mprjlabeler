@@ -1,3 +1,4 @@
+import json
 import os
 from django.contrib import messages
 from django.conf import settings
@@ -6,7 +7,7 @@ from django.core.paginator import Paginator
 from django.db.models import Count
 from django.db import connection
 from django.utils.encoding import smart_str
-from django.http import JsonResponse, StreamingHttpResponse
+from django.http import JsonResponse, StreamingHttpResponse, HttpResponse
 from wsgiref.util import FileWrapper
 from django.shortcuts import (
     render,
@@ -30,6 +31,7 @@ from .tasks import (
     submeter_classificacao,
     compactar,
 )
+from .task_utils.functions import montar_estrutura_filtro
 
 
 def obter_filtro(idfiltro, username):
@@ -90,13 +92,44 @@ def obter_contadores_filtro(filtro):
         return dictfetchall(cursor)
 
 
+def preencher_estrutura_inicial(m_filtro, estrutura):
+    mapper = [
+        ("regex", '1'),
+        ("regex_reforco", '2'),
+        ("regex_exclusao", '3'),
+        ("regex_invalidacao", '4'),
+        ("coadunadas", '5')
+    ]
+    for classe in estrutura:
+        m_classe = ClasseFiltro()
+        m_classe.filtro = m_filtro
+        m_classe.nome = classe['nome']
+        m_classe.save()
+        for parametro, tipo in mapper:
+            [
+                ItemFiltro(
+                    classe_filtro=m_classe,
+                    termos=regex,
+                    tipo=tipo,
+                    regex=True
+                ).save()
+                for regex in classe['parametros'][parametro]
+            ]
+
+
 @login_required
 @require_http_methods(['POST'])
 def adicionar_filtro(request):
-    form = AdicionarFiltroForm(request.POST)
+    form = AdicionarFiltroForm(request.POST, request.FILES)
     form.instance.responsavel = request.user.username
 
     form.save()
+
+    if form.files:
+        preencher_estrutura_inicial(
+            form.instance,
+            json.loads(form.files['adicionar_filtro-estrutura'].read())
+        )
 
     messages.success(
         request,
@@ -393,6 +426,18 @@ def executar_compactacao(request, idfiltro):
 
 @login_required
 @require_http_methods(['GET'])
+def baixar_estrutura(request, idfiltro):
+    m_filtro = obter_filtro(idfiltro, request.user.username)
+
+    estrutura = json.dumps(montar_estrutura_filtro(m_filtro, True))
+    response = HttpResponse(estrutura, content_type="application/json")
+    response['Content-Disposition'] = 'attachment; filename=estrutura.json'
+
+    return response
+
+
+@login_required
+@require_http_methods(['GET'])
 def mediaview(request, mediafile):
     del request
     fullfile = os.path.join(settings.MEDIA_ROOT, mediafile)
@@ -402,3 +447,4 @@ def mediaview(request, mediafile):
     response['Content-Disposition'] = 'attachment; filename=%s' % mediafile
     response['X-Sendfile'] = smart_str(fullfile)
     return response
+

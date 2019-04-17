@@ -3,6 +3,12 @@ from ordered_model.models import OrderedModel
 from .storages import OverwriteStorage
 
 
+TIPOS_RASPADOR = (
+    ('1', 'Tribunal de Justiça do Rio de Janeiro'),
+    ('2', 'Arquivo Tabulado'),
+)
+
+
 SITUACOES_FILTRO = (
     ('1', 'Em Criação'),
     ('2', 'Baixando Documentos'),
@@ -33,7 +39,13 @@ class TipoMovimento(models.Model):
 
 class Filtro(models.Model):
     nome = models.CharField(max_length=50)
-    tipos_movimento = models.ManyToManyField('TipoMovimento')
+    tipo_raspador = models.CharField(
+        max_length=1,
+        choices=TIPOS_RASPADOR,
+        blank=True,
+        null=True
+    )
+    tipos_movimento = models.ManyToManyField('TipoMovimento', blank=True)
     arquivo_documentos = models.FileField(null=True, blank=True)
     situacao = models.CharField(
         max_length=1,
@@ -80,6 +92,8 @@ class Documento(models.Model):
     numero = models.CharField(max_length=32)
     tipo_movimento = models.ForeignKey(
         'TipoMovimento',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
     )
     conteudo = models.TextField()
