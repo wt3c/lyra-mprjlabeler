@@ -28,13 +28,15 @@ class AdicionarFiltroForm(BaseModelForm):
         model = Filtro
         fields = ['nome']
 
+    estrutura = forms.FileField(required=False)
+
 
 class FiltroForm(BaseModelForm):
     prefix = 'filtro'
 
     class Meta:
         model = Filtro
-        fields = ['nome', 'tipos_movimento', 'arquivo_documentos']
+        fields = ['nome', 'tipo_raspador', 'tipos_movimento', 'arquivo_documentos']
 
 
 class AdicionarClasseForm(BaseModelForm):

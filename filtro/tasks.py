@@ -1,4 +1,5 @@
 # Declarar aqui todas as tasks de consumo do Celery
+import csv
 import logging
 from celery import shared_task
 from classificador_lyra.regex import classifica_item_sequencial
@@ -7,7 +8,7 @@ from django.core.files import File
 from tarfile import TarFile, TarInfo
 from collections import defaultdict
 from slugify import slugify
-from .models import Filtro
+from .models import Filtro, Documento
 from .task_utils import (
     limpar_documentos,
     parse_documentos,
@@ -26,20 +27,7 @@ logger = logging.getLogger(__name__)
 SITUACOES_EXECUTORES = '246'
 
 
-@shared_task
-def submeter_classificacao(idfiltro):
-    logger.info('Processando filtro %s' % idfiltro)
-    m_filtro = Filtro.objects.get(pk=idfiltro)
-
-    if m_filtro.situacao in SITUACOES_EXECUTORES:
-        return
-
-    m_filtro.situacao = '2'  # baixando
-    m_filtro.save()
-
-    # limpando documentos atuais
-    limpar_documentos(m_filtro)
-
+def submeter_classificacao_tjrj(m_filtro, idfiltro):
     tipos_movimento = m_filtro.tipos_movimento.all()
     logger.info(
         'Parsearei pelos Tipos de Movimento: %s' % str(tipos_movimento)
@@ -74,6 +62,46 @@ def submeter_classificacao(idfiltro):
     m_filtro.save()
 
     classificar_baixados.delay(idfiltro)
+
+
+def submeter_classificacao_arquivotabulado(m_filtro, idfiltro):
+    logger.info('Vou parsear os documentos')
+
+    with m_filtro.arquivo_documentos.open(mode='r') as saidinha:
+        reader = csv.reader(saidinha)
+        for linha in reader:
+            m_documento = Documento()
+            m_documento.filtro = m_filtro
+            m_documento.numero = linha[0]
+            m_documento.conteudo = linha[1]
+            m_documento.save()
+
+    logger.info('Terminei de parsear os documentos')
+
+    m_filtro.situacao = '3'
+    m_filtro.save()
+
+    classificar_baixados.delay(idfiltro)
+
+
+@shared_task
+def submeter_classificacao(idfiltro):
+    logger.info('Processando filtro %s' % idfiltro)
+    m_filtro = Filtro.objects.get(pk=idfiltro)
+
+    if m_filtro.situacao in SITUACOES_EXECUTORES:
+        return
+
+    m_filtro.situacao = '2'  # baixando
+    m_filtro.save()
+
+    # limpando documentos atuais
+    limpar_documentos(m_filtro)
+
+    if m_filtro.tipo_raspador == '1':
+        submeter_classificacao_tjrj(m_filtro, idfiltro)
+    elif m_filtro.tipo_raspador == '2':
+        submeter_classificacao_arquivotabulado(m_filtro, idfiltro)
 
 
 @shared_task

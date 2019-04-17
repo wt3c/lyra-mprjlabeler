@@ -1,0 +1,25 @@
+<div id="helparquivotabulado" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="helparquivoLabel" aria-hidden="true" style="padding-right: 15px;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="helparquivolLabel">Arquivo Tabulado</h4> </div>
+            <div class="modal-body">
+                <p>Deve ser informado um arquivo no formato CSV, sem cabeçalho, com duas colunas, uma com a numeração única do documento e uma segunda coluna com o conteúdo de texto a ser analisado.</p>
+                <p>O padrão do arquivo CSV é: separador: , | escapador: \ | quoting: "</p>
+                <p>A formatação do número dos documentos é livre, mas é necessário que nenhum número se repita.</p>
+                <p>ex.:</p>
+                <p>
+                <table>
+                    <tr><td>00047291920188190054,"Texto longo"</td></tr>
+                    <tr><td>00312264720188190038,"Outro exemplo de texto"</td></tr>
+                    <tr><td>01144276820178190038,"Exemplo de linha longa com muito texto"</td></tr>
+                </table>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info waves-effect" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
