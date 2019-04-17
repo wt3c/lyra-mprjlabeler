@@ -28,6 +28,8 @@ class AdicionarFiltroForm(BaseModelForm):
         model = Filtro
         fields = ['nome']
 
+    estrutura = forms.FileField(required=False)
+
 
 class FiltroForm(BaseModelForm):
     prefix = 'filtro'

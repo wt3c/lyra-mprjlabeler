@@ -85,12 +85,12 @@ def transforma_em_regex(itemfiltro):
         return '(%s)' % re.escape(itemfiltro.termos)
 
 
-def montar_estrutura_filtro(m_filtro):
+def montar_estrutura_filtro(m_filtro, serializavel=False):
     retorno = []
     for classe in m_filtro.classefiltro_set.all():
         pre_classe = {
             "nome": None,
-            "classe": classe,
+            "classe": "" if serializavel else classe,
             "parametros": {
                 "regex": [],
                 "regex_reforco": None,
