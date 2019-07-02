@@ -36,7 +36,12 @@ class FiltroForm(BaseModelForm):
 
     class Meta:
         model = Filtro
-        fields = ['nome', 'tipo_raspador', 'tipos_movimento', 'arquivo_documentos']
+        fields = [
+            'nome',
+            'tipo_raspador',
+            'tipos_movimento',
+            'arquivo_documentos'
+        ]
 
 
 class AdicionarClasseForm(BaseModelForm):
