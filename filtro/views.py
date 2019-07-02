@@ -29,6 +29,7 @@ from .models import (
 )
 from .tasks import (
     submeter_classificacao,
+    classificar_baixados,
     compactar,
 )
 from .task_utils.functions import montar_estrutura_filtro
@@ -341,6 +342,24 @@ def classificar(request, idfiltro):
 
 @login_required
 @require_http_methods(['GET'])
+def reaplicar_filtro(request, idfiltro):
+    classificar_baixados.delay(idfiltro)
+
+    messages.info(
+        request,
+        ('Filtro submetido para reclassificação! Acompanhe o '
+         'andamento pela tela de gestão dos filtros.')
+    )
+
+    return redirect(
+        reverse(
+            'filtros'
+        )
+    )
+
+
+@login_required
+@require_http_methods(['GET'])
 def obter_situacao(request, idfiltro):
     m_filtro = obter_filtro(idfiltro, request.user.username)
 
@@ -447,4 +466,3 @@ def mediaview(request, mediafile):
     response['Content-Disposition'] = 'attachment; filename=%s' % mediafile
     response['X-Sendfile'] = smart_str(fullfile)
     return response
-

@@ -35,7 +35,8 @@ from filtro.views import (
     listar_resultados,
     executar_compactacao,
     mediaview,
-    baixar_estrutura
+    baixar_estrutura,
+    reaplicar_filtro
 )
 
 
@@ -104,6 +105,11 @@ urlpatterns = [
         'filtros/classificar-filtro/<int:idfiltro>',
         classificar,
         name='filtros-classificar'
+    ),
+    path(
+        'filtros/reaplicar-filtro/<int:idfiltro>',
+        reaplicar_filtro,
+        name='filtros-reaplicar'
     ),
     path(
         'filtros/obter-situacao-filtro/<int:idfiltro>',
