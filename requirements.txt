@@ -7,11 +7,16 @@ django-yamlfield==1.0.3
 django-ordered-model==3.1.1
 gunicorn==19.7.1
 idna==2.6
+imblearn==0.0
+missingno==0.4.1
 newrelic==3.2.0.91
+pandas==0.24.2
 psycopg2==2.7.4
 psycopg2-binary==2.7.4
+pyLDAvis==2.1.2
 pytz==2018.3
 PyYAML==3.12
+sklearn==0.0
 raven==6.6.0
 redis==3.2.1
 requests==2.18.4

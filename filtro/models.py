@@ -53,6 +53,7 @@ class Filtro(models.Model):
         default='1'
     )
     saida = models.FileField(null=True, blank=True, storage=OverwriteStorage())
+    saida_lda = models.TextField(null=True, blank=True)
     responsavel = models.CharField(max_length=50, default='')
     percentual_atual = models.FloatField(null=True, blank=True)
 
