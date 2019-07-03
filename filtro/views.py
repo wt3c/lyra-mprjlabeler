@@ -466,3 +466,10 @@ def mediaview(request, mediafile):
     response['Content-Disposition'] = 'attachment; filename=%s' % mediafile
     response['X-Sendfile'] = smart_str(fullfile)
     return response
+
+
+@login_required
+@require_http_methods(['GET'])
+def explorar_lda(request, idfiltro):
+    m_filtro = obter_filtro(idfiltro, request.user.username)
+    return HttpResponse(m_filtro.saida_lda)

@@ -11,10 +11,21 @@
                     <div class="col-md-4 col-sm-12">
                         <a href='?classe={{mario.classe}}'>
                             <div class="white-box bg-primary color-box">
-                                <h1 class="text-white font-light m-b-0">{{mario.total}}</h1>
+                                {% if mario.classe == 0 %}
+                                <h1 style="float:right;">
+                                    <a href="#"
+                                    data-toggle="modal" 
+                                    data-target="#lda">
+                                        <i class="fa fa-search text-success m-r-10"></i>
+                                    </a>
+                                </h1>
+                                {% endif %}
+                                <h1 class="text-white font-light m-b-0">
+                                    {{mario.total}}
+                                </h1>
                                 <span class="hr-line"></span>
                                 <p class="cb-text">{{mario.nomeclasse}}</p>
-                                {% if mario.classe == '0' %}
+                                {% if mario.classe == 0 %}
                                     <h6 class="text-white font-semibold"><span class="font-light">--</span></h6>
                                 {% else %}
                                     <h6 class="text-white font-semibold">{{mario.percentual_classe|floatformat:0}}% <span class="font-light">dos classificados</span></h6>
@@ -103,13 +114,25 @@
     </div>
 </div>
 
+<div id="lda" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="helparquivoLabel" aria-hidden="true" style="padding-right: 15px;">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-body">
+                {{filtro.saida_lda | safe}}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info waves-effect" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     const detalhar = iddocumento => {
         let meupre = document.querySelector(`#conteudo_${iddocumento}`)
         let conteudofinal = document.querySelector("#conteudofinal")
         conteudofinal.innerHTML = meupre.innerHTML
     }
-
 </script>
 
 {% endblock %}
