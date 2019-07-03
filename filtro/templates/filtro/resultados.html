@@ -9,30 +9,33 @@
                 <div class="row">
                     {% for mario in sumario %}
                     <div class="col-md-4 col-sm-12">
-                        <a href='?classe={{mario.classe}}'>
-                            <div class="white-box bg-primary color-box">
+                        <div class="white-box bg-primary color-box">
+                            <h1 style="float:right;">
                                 {% if mario.classe == 0 %}
-                                <h1 style="float:right;">
                                     <a href="#"
                                     data-toggle="modal" 
-                                    data-target="#lda">
-                                        <i class="fa fa-search text-success m-r-10"></i>
+                                    data-target="#lda"
+                                    title="Análise Latent Direchlet Allocation">
+                                        <i class="fa fa-bar-chart-o m-r-10" style="color:white;"></i>
                                     </a>
-                                </h1>
                                 {% endif %}
-                                <h1 class="text-white font-light m-b-0">
-                                    {{mario.total}}
-                                </h1>
-                                <span class="hr-line"></span>
-                                <p class="cb-text">{{mario.nomeclasse}}</p>
-                                {% if mario.classe == 0 %}
-                                    <h6 class="text-white font-semibold"><span class="font-light">--</span></h6>
-                                {% else %}
-                                    <h6 class="text-white font-semibold">{{mario.percentual_classe|floatformat:0}}% <span class="font-light">dos classificados</span></h6>
-                                {% endif %}
-                                <h6 class="text-white font-semibold">{{mario.percentual_total|floatformat:0}}% <span class="font-light">do total</span></h6>    
-                            </div>
-                        </a>
+                                <a href='?classe={{mario.classe}}'
+                                    title="Detalhar Documentos">
+                                    <i class="fa fa-search m-r-10" style="color:white;"></i>
+                                </a>
+                            </h1>
+                            <h1 class="text-white font-light m-b-0">
+                                {{mario.total}}
+                            </h1>
+                            <span class="hr-line"></span>
+                            <p class="cb-text">{{mario.nomeclasse}}</p>
+                            {% if mario.classe == 0 %}
+                                <h6 class="text-white font-semibold"><span class="font-light">--</span></h6>
+                            {% else %}
+                                <h6 class="text-white font-semibold">{{mario.percentual_classe|floatformat:0}}% <span class="font-light">dos classificados</span></h6>
+                            {% endif %}
+                            <h6 class="text-white font-semibold">{{mario.percentual_total|floatformat:0}}% <span class="font-light">do total</span></h6>    
+                        </div>
                     </div>
                     {% endfor %}
                     <div class="col-md-4 col-sm-12">
@@ -117,6 +120,10 @@
 <div id="lda" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="helparquivoLabel" aria-hidden="true" style="padding-right: 15px;">
     <div class="modal-dialog" style="width:80%;">
         <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Latent Dirichlet Allocation</h4> 
+            </div>
             <div class="modal-body">
                 {{filtro.saida_lda | safe}}
             </div>
