@@ -36,7 +36,8 @@ from filtro.views import (
     executar_compactacao,
     mediaview,
     baixar_estrutura,
-    reaplicar_filtro
+    reaplicar_filtro,
+    explorar_lda
 )
 
 
@@ -134,6 +135,11 @@ urlpatterns = [
         'filtros/<int:idfiltro>/estrutura',
         baixar_estrutura,
         name='filtros-baixar-estrutura'
+    ),
+    path(
+        'filtros/explorar_lda/<int:idfiltro>',
+        explorar_lda,
+        name='filtros-explorar-lda'
     )
 ] + static(
     settings.STATIC_URL,

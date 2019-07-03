@@ -19,6 +19,7 @@ from .task_utils import (
     preparar_classificadores,
     obtem_classe
 )
+from .analysis import modelar_lda
 
 
 logger = logging.getLogger(__name__)
@@ -142,7 +143,20 @@ def classificar_baixados(idfiltro):
         logger.info('Percentual %s' % m_filtro.percentual_atual)
         m_filtro.save()
 
+    # aplica modelo LDA
+    aplicar_lda(m_filtro)
+
     m_filtro.situacao = '5'
+    m_filtro.save()
+
+
+def aplicar_lda(m_filtro):
+    conteudos = m_filtro.documento_set.filter(
+        classe_filtro__isnull=True).all().values_list('conteudo', flat=True)
+
+    dados = modelar_lda(conteudos)
+
+    m_filtro.saida_lda = dados
     m_filtro.save()
 
 
