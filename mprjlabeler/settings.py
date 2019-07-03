@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'ordered_model',
     'labeler',
     'filtro',
+    'nested_admin',
 ]
 
 MIDDLEWARE = [

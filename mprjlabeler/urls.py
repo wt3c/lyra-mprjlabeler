@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.contrib.auth.views import logout
 from django.conf.urls.static import static
 from django.conf import settings
@@ -140,7 +140,11 @@ urlpatterns = [
         'filtros/explorar_lda/<int:idfiltro>',
         explorar_lda,
         name='filtros-explorar-lda'
-    )
+    ),
+    path(
+        'nested_admin/',
+        include('nested_admin.urls')
+    ),
 ] + static(
     settings.STATIC_URL,
     document_root=settings.STATIC_ROOT
