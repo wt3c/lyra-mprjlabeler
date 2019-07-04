@@ -4,6 +4,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 def modelar_lda(conteudos):
+    if not conteudos:
+        return ""
+
     vectorizer_all = TfidfVectorizer(
         ngram_range=(1, 2),
         max_df=0.6,
