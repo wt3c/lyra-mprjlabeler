@@ -15,12 +15,12 @@ def modelar_lda(conteudos):
     )
 
     features = vectorizer_all.fit_transform(conteudos)
-    lda = LatentDirichletAllocation(n_components=10)
+    lda = LatentDirichletAllocation(n_components=10, random_state=42)
 
     lda.fit(features)
 
     modelo = pyLDAvis.sklearn.prepare(lda, features, vectorizer_all)
 
-    saida = pyLDAvis.display(modelo)
+    saida = pyLDAvis.prepared_data_to_html(modelo)
 
-    return saida.data
+    return saida

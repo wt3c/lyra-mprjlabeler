@@ -394,8 +394,10 @@ def listar_resultados(request, idfiltro):
     total_documentos = documentos.all().count()
 
     for item in sumario:
-        item['percentual_classe'] = (item['total'] * 100.0)/total_classificados
-        item['percentual_total'] = (item['total'] * 100.0)/total_documentos
+        item['percentual_classe'] = 0 if not total_classificados \
+            else (item['total'] * 100.0)/total_classificados
+        item['percentual_total'] = 0 if not total_documentos \
+            else (item['total'] * 100.0)/total_documentos
 
     if classe == 'T':
         documentos = documentos.all()
