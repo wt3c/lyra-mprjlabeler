@@ -1,5 +1,6 @@
 # Declarar aqui todas as tasks de consumo do Celery
 import csv
+import ctypes
 import logging
 from celery import shared_task
 from classificador_lyra.regex import classifica_item_sequencial
@@ -23,6 +24,8 @@ from .analysis import modelar_lda
 
 
 logger = logging.getLogger(__name__)
+# configuracao de tamanho maximo de campo csv disponivel na arquitetura
+csv.field_size_limit(int(ctypes.c_ulong(-1).value // 2))
 
 
 SITUACOES_EXECUTORES = '246'
