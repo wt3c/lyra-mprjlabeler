@@ -11,7 +11,6 @@ idna
 newrelic==3.2.0.91
 psycopg2==2.7.4
 psycopg2-binary==2.7.4
-pyLDAvis==2.1.2
 pytz==2018.3
 PyYAML==3.12
 sklearn==0.0
@@ -21,5 +20,6 @@ requests
 six==1.11.0
 urllib3
 whitenoise==3.3.1
+git+https://github.com/MinisterioPublicoRJ/pyLDAvis.git
 git+https://github.com/MinisterioPublicoRJ/processostjrj.git@develop
 git+https://github.com/MinisterioPublicoRJ/classificador-lyra.git
