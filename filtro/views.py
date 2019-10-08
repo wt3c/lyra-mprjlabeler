@@ -22,7 +22,7 @@ from .forms import (
     AdicionarClasseForm,
     ItemFiltroForm,
 )
-from .models import (
+from filtro.models import (
     Filtro,
     ClasseFiltro,
     ItemFiltro
@@ -78,9 +78,10 @@ def obter_contadores_filtro(filtro):
         classe,
         count(classe) total
         from (
-        SELECT
+        SELECT distinct
         case when classe_filtro_id is null then 0
-        else classe_filtro_id end classe
+        else classe_filtro_id end classe,
+        numero
         FROM filtro_documento
         WHERE "filtro_documento"."filtro_id" = %s) tabela
         left join filtro_classefiltro on
@@ -389,9 +390,12 @@ def listar_resultados(request, idfiltro):
 
     sumario = obter_contadores_filtro(m_filtro)
 
-    total_classificados = documentos.all().exclude(
-        classe_filtro=None).count()
-    total_documentos = documentos.all().count()
+    total_classificados = sum(
+        item['total']
+        for item in sumario
+        if item['classe'] != 0
+    )
+    total_documentos = documentos.distinct('numero').count()
 
     for item in sumario:
         item['percentual_classe'] = 0 if not total_classificados \
@@ -406,7 +410,7 @@ def listar_resultados(request, idfiltro):
     else:
         documentos = documentos.filter(classe_filtro=classe).all()
 
-    total = documentos.count()
+    total = documentos.distinct('numero').count()
     paginator = Paginator(documentos, 25)
 
     page = request.GET.get('page', 1)
