@@ -11,8 +11,9 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-import dj_database_url
+from dj_database_url import parse as db_url
 from django.contrib import messages
+from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'raven.contrib.django.raven_compat',
     'ordered_model',
     'labeler',
     'filtro',
@@ -84,7 +84,10 @@ WSGI_APPLICATION = 'mprjlabeler.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config()
+    'default': config(
+        'DATABASE_URL',
+        cast=db_url
+    )
 }
 
 
@@ -137,10 +140,6 @@ LOGIN_URL = '/login/'
 
 #STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-RAVEN_CONFIG = {
-    'dsn': os.environ["RAVENURL"],
-}
-
 MESSAGE_TAGS = {
     messages.DEBUG: 'info',
     messages.INFO: 'info',
@@ -149,9 +148,9 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-CELERY_BROKER_URL = os.environ["CELERY_URL"]
-CELERY_TASK_QUEUE = os.environ["CELERY_QUEUE"]
+CELERY_BROKER_URL = config("CELERY_URL", None)
+CELERY_TASK_QUEUE = config("CELERY_QUEUE", None)
 
 
-if "AMBIENTE" in os.environ and os.environ["AMBIENTE"] == "producao":
+if not config("AMBIENTE", None) and config("AMBIENTE", None) == "producao":
     DEBUG = False
