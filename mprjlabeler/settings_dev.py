@@ -161,5 +161,5 @@ LOGGING = {
 CELERY_BROKER_URL = config("CELERY_URL", None)
 CELERY_TASK_QUEUE = config("CELERY_QUEUE", None)
 
-if not config("AMBIENTE", None) and config("AMBIENTE", None) == "producao":
+if config("AMBIENTE", None) == "producao":
     DEBUG = False
