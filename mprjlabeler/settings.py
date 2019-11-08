@@ -154,3 +154,5 @@ CELERY_TASK_QUEUE = config("CELERY_QUEUE", None)
 
 if config("AMBIENTE", None) == "producao":
     DEBUG = False
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
