@@ -17,7 +17,7 @@
             <div class="modal-footer">
                 <form method="POST" action={% url 'filtros-excluir' %}>
                     {% csrf_token %}
-                    <input type="hidden" id="idfiltro" name="idfiltro">
+                    <input type="hidden" id="idfiltroexcluir" name="idfiltroexcluir">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-danger">Excluir</button>
                 </form>
