@@ -177,7 +177,7 @@ def filtro(request, idfiltro):
 @login_required
 @require_http_methods(['POST'])
 def excuir_filtro(request):
-    idfiltro = request.POST.get('idfiltro')
+    idfiltro = request.POST.get('idfiltroexcluir')
 
     m_filtro = obter_filtro(idfiltro, request.user.username)
     m_filtro.delete()
