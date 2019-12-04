@@ -123,3 +123,4 @@ venv.bak/
 
 
 # End of https://www.gitignore.io/api/code,django,python
+settings.ini
