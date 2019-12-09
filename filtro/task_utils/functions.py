@@ -35,11 +35,10 @@ def download_processos(documentos):
         except Exception as error:
             logger.error('Erro no download do processo %s' % numero, error)
             continue
-        yield processo
+        yield (numero, processo)
 
 
-def parse_documento(params):
-    tipos_movimento, processo = params
+def parse_documento(tipos_movimento, processo):
     retorno = []
     if (not processo.sucesso or
             not processo.processo or
@@ -64,11 +63,10 @@ def parse_documento(params):
                 retorno.append(
                     (processo.processo.dadosBasicos.numero, tipo, inteiro_teor)
                 )
-
     return retorno
 
 
-def obtem_documentos_finais(pre_documentos, m_filtro):
+def obtem_documento_final(pre_documentos, m_filtro):
     for pre_documento in pre_documentos:
         m_documento = Documento()
         m_documento.filtro = m_filtro

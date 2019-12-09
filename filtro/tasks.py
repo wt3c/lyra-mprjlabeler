@@ -15,12 +15,15 @@ from .task_utils import (
     parse_documentos,
     download_processos,
     parse_documento,
-    obtem_documentos_finais,
+    obtem_documento_final,
     montar_estrutura_filtro,
     preparar_classificadores,
     obtem_classe
 )
 from .analysis import modelar_lda
+
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 logger = logging.getLogger(__name__)
@@ -41,26 +44,27 @@ def submeter_classificacao_tjrj(m_filtro, idfiltro):
     numeros_documentos = parse_documentos(m_filtro)
 
     # Baixa os processos
-    processos = []
     contador = 0
     logger.info('Vou baixar %s documentos' % len(numeros_documentos))
-    for processo in download_processos(numeros_documentos):
-        processos.append(processo)
+    for numero, processo in download_processos(numeros_documentos):
         contador += 1
-        logger.info('Passo %s' % contador)
+        logger.info('Passo %s, processo %s' % (contador, numero))
+
+        try:
+            promessas = parse_documento(
+                tipos_movimento,
+                processo
+            )
+            obtem_documento_final(
+                promessas,
+                m_filtro
+            )
+        except Exception as error:
+            print(str(error))
+
         m_filtro.percentual_atual = contador / len(numeros_documentos) * 100
         logger.info('Percentual %s' % m_filtro.percentual_atual)
         m_filtro.save()
-
-    # Parse de Documentos
-    pre_documentos = []
-    for bloco in map(
-                parse_documento,
-                [(tipos_movimento, processo) for processo in processos]
-            ):
-        pre_documentos.extend(bloco)
-
-    obtem_documentos_finais(pre_documentos, m_filtro)
 
     m_filtro.situacao = '3'
     m_filtro.save()
