@@ -1,9 +1,10 @@
+import csv
 import logging
 import re
 from classificador_lyra.regex import constroi_classificador_dinamica
 from processostjrj.mni import consulta_processo, cria_cliente
 from slugify import slugify
-from filtro.models import Documento
+from filtro.models import Documento, PropriedadeDocumento
 
 
 logger = logging.getLogger(__name__)
@@ -14,15 +15,16 @@ def limpar_documentos(m_filtro):
 
 
 def parse_documentos(m_filtro):
-    m_filtro.arquivo_documentos.open(mode='r')
-    retorno = m_filtro.arquivo_documentos.readlines()
-    m_filtro.arquivo_documentos.close()
-    return retorno
+    with m_filtro.arquivo_documentos.open(mode='r') as file:
+        for row in csv.DictReader(file):
+            yield row
 
 
 def download_processos(documentos):
     cliente = cria_cliente()
-    for numero in documentos:
+    for documento in documentos:
+        numero = documento.pop('numero', None)
+
         if not numero:
             continue
         try:
@@ -35,7 +37,7 @@ def download_processos(documentos):
         except Exception as error:
             logger.error('Erro no download do processo %s' % numero, error)
             continue
-        yield (numero, processo)
+        yield (numero, processo, documento)
 
 
 def parse_documento(tipos_movimento, processo):
@@ -66,7 +68,7 @@ def parse_documento(tipos_movimento, processo):
     return retorno
 
 
-def obtem_documento_final(pre_documentos, m_filtro):
+def obtem_documento_final(pre_documentos, m_filtro, detalhes):
     for pre_documento in pre_documentos:
         m_documento = Documento()
         m_documento.filtro = m_filtro
@@ -74,6 +76,13 @@ def obtem_documento_final(pre_documentos, m_filtro):
         m_documento.tipo_movimento = pre_documento[1]
         m_documento.conteudo = pre_documento[2]
         m_documento.save()
+
+        for key in detalhes:
+            PropriedadeDocumento(
+                documento=m_documento,
+                chave=key,
+                valor=detalhes[key],
+            ).save()
 
 
 def transforma_em_regex(itemfiltro):

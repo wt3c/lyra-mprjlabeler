@@ -40,13 +40,14 @@ def submeter_classificacao_tjrj(m_filtro, idfiltro):
         'Parsearei pelos Tipos de Movimento: %s' % str(tipos_movimento)
     )
 
-    # Obtém todos os números de documentos
-    numeros_documentos = parse_documentos(m_filtro)
+    # conta a quantidade de linhas
+    num_lines = sum(1 for line in m_filtro.arquivo_documentos.open(mode='r'))
 
     # Baixa os processos
     contador = 0
-    logger.info('Vou baixar %s documentos' % len(numeros_documentos))
-    for numero, processo in download_processos(numeros_documentos):
+    logger.info('Vou baixar %s documentos' % num_lines)
+    for numero, processo, detalhes in download_processos(
+            parse_documentos(m_filtro)):
         contador += 1
         logger.info('Passo %s, processo %s' % (contador, numero))
 
@@ -57,12 +58,13 @@ def submeter_classificacao_tjrj(m_filtro, idfiltro):
             )
             obtem_documento_final(
                 promessas,
-                m_filtro
+                m_filtro,
+                detalhes
             )
         except Exception as error:
-            print(str(error))
+            logger.error(str(error))
 
-        m_filtro.percentual_atual = contador / len(numeros_documentos) * 100
+        m_filtro.percentual_atual = contador / num_lines * 100
         logger.info('Percentual %s' % m_filtro.percentual_atual)
         m_filtro.save()
 
@@ -100,8 +102,8 @@ def submeter_classificacao(idfiltro):
     if m_filtro.situacao in SITUACOES_EXECUTORES:
         return
 
-    m_filtro.situacao = '2'  # baixando
-    m_filtro.save()
+    #m_filtro.situacao = '2'  # baixando
+    #m_filtro.save()
 
     # limpando documentos atuais
     limpar_documentos(m_filtro)

@@ -89,7 +89,10 @@ class Documento(models.Model):
         null=True,
         on_delete=models.CASCADE
     )
-    filtro = models.ForeignKey('Filtro', on_delete=models.CASCADE)
+    filtro = models.ForeignKey(
+        'Filtro',
+        on_delete=models.CASCADE
+    )
     numero = models.CharField(max_length=32)
     tipo_movimento = models.ForeignKey(
         'TipoMovimento',
@@ -98,3 +101,12 @@ class Documento(models.Model):
         null=True
     )
     conteudo = models.TextField()
+
+
+class PropriedadeDocumento(models.Model):
+    documento = models.ForeignKey(
+        'Documento',
+        on_delete=models.CASCADE
+    )
+    chave = models.CharField(max_length=255)
+    valor = models.CharField(max_length=255)
