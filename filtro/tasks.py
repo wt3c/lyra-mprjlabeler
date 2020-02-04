@@ -4,7 +4,7 @@ import ctypes
 import logging
 from celery import shared_task
 from classificador_lyra.regex import classifica_item_sequencial
-from io import BytesIO
+from io import BytesIO, TextIOWrapper
 from django.core.files import File
 from tarfile import TarFile, TarInfo
 from collections import defaultdict
@@ -32,6 +32,12 @@ csv.field_size_limit(int(ctypes.c_ulong(-1).value // 2))
 
 
 SITUACOES_EXECUTORES = '246'
+
+
+class NullBytesIOWrapper(TextIOWrapper):
+    def readline(self, *args, **kwargs):
+        data = super().readline(*args, **kwargs)
+        return data.replace('\x00', '')
 
 
 def submeter_classificacao_tjrj(m_filtro, idfiltro):
@@ -77,7 +83,8 @@ def submeter_classificacao_tjrj(m_filtro, idfiltro):
 def submeter_classificacao_arquivotabulado(m_filtro, idfiltro):
     logger.info('Vou parsear os documentos')
 
-    with m_filtro.arquivo_documentos.open(mode='r') as saidinha:
+    with m_filtro.arquivo_documentos.open(mode='rb') as saidinha:
+        saidinha = NullBytesIOWrapper(saidinha)
         reader = csv.reader(saidinha)
         for linha in reader:
             m_documento = Documento()
