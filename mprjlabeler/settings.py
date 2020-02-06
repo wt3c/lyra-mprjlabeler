@@ -156,3 +156,10 @@ if config("AMBIENTE", None) == "producao":
     DEBUG = False
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = None
+
+
+CLASSIFICADOR_CHUNKSIZE = config(
+    'CLASSIFICADOR_CHUNKSIZE',
+    default=500,
+    cast=int
+)

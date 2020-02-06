@@ -6,6 +6,7 @@ from celery import shared_task
 from classificador_lyra.regex import classifica_item_sequencial
 from io import BytesIO, TextIOWrapper
 from django.core.files import File
+from django.conf import settings
 from tarfile import TarFile, TarInfo
 from collections import defaultdict
 from slugify import slugify
@@ -21,6 +22,8 @@ from .task_utils import (
     obtem_classe
 )
 from .analysis import modelar_lda
+from billiard.pool import Pool, cpu_count
+
 
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -119,6 +122,37 @@ def submeter_classificacao(idfiltro):
         submeter_classificacao_arquivotabulado(m_filtro, idfiltro)
 
 
+estrutura_global = None
+classificadores_global = None
+
+
+def classificador_inicializador(estrutura_base):
+    global estrutura_global, classificadores_global
+    estrutura_global = estrutura_base
+
+    # prepara os classificadores dinâmicos
+    classificadores_global = preparar_classificadores(estrutura_global)
+
+
+def classificar_paralelo(documento):
+    try:
+        classificacao = classifica_item_sequencial(
+            documento.conteudo,
+            classificadores_global
+        )
+        if classificacao:
+            documento.classe_filtro = obtem_classe(
+                classificacao,
+                estrutura_global
+            )
+        else:
+            documento.classe_filtro = None
+    except Exception as error:
+        return error
+
+    return documento
+
+
 @shared_task
 def classificar_baixados(idfiltro):
     logger.info('Classificando filtro %s' % idfiltro)
@@ -134,28 +168,36 @@ def classificar_baixados(idfiltro):
     # monta a estrutura de classificadores
     estrutura = montar_estrutura_filtro(m_filtro)
 
-    # prepara os classificadores dinâmicos
-    classificadores = preparar_classificadores(estrutura)
-
     documentos = m_filtro.documento_set.all()
+    iterador = documentos.iterator()
+    logger.info('Contando a quantidade de documento')
     qtd_documentos = documentos.count()
+    pool = Pool(
+        cpu_count(),
+        initializer=classificador_inicializador,
+        initargs=(estrutura, )
+    )
 
-    # roda os classificadores
-    for contador, documento in enumerate(documentos):
-        classificacao = classifica_item_sequencial(
-            documento.conteudo,
-            classificadores
+    contador = 0
+    logger.info(
+        'Aplicando classificadores em paralelo: %s chunks em %s nucleos' % (
+            settings.CLASSIFICADOR_CHUNKSIZE,
+            cpu_count()
         )
-        if classificacao:
-            documento.classe_filtro = obtem_classe(classificacao, estrutura)
-            documento.save()
-        else:
-            documento.classe_filtro = None
-            documento.save()
-
+    )
+    for documento in pool.imap(
+                classificar_paralelo,
+                iterador,
+                chunksize=settings.CLASSIFICADOR_CHUNKSIZE
+            ):
+        contador += 1
         m_filtro.percentual_atual = contador / qtd_documentos * 100
-        logger.info('Percentual %s' % m_filtro.percentual_atual)
+        if contador % 500 == 0:
+            logger.info('Percentual %s' % m_filtro.percentual_atual)
         m_filtro.save()
+        documento.save()
+
+    logger.info("Terminei classificação regex, começando LDA")
 
     # aplica modelo LDA
     aplicar_lda(m_filtro)
