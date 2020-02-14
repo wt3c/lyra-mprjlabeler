@@ -15,16 +15,29 @@ services:
     ports:
       - '127.0.0.1:6379:6379'
     volumes:
-      - ./redisdata:/data
+      - redisdata:/data
+
+  lighttpd:
+    container_name: 'lighttpd'
+    image: 'sebp/lighttpd'
+    ports:
+      - '0.0.0.0:8081:80'
+    volumes:
+      - media:/var/www/localhost/htdocs/media/
+      - static:/var/www/localhost/htdocs/static/
+    depends_on:
+      - web
+    tty: true
 
   web:
     build: '.'
     image: 'websource'
     command: './app.sh'
     ports:
-      - '127.0.0.1:8080:8080'
+      - '0.0.0.0:8080:8080'
     volumes:
-      - ./media:/media
+      - media:/media
+      - static:/static
       - .:/app
     depends_on:
       - postgres
@@ -39,3 +52,16 @@ services:
       - web
     depends_on:
       - web
+
+  code:
+    image: 'codercom/code-server'
+    ports:
+      - '0.0.0.0:8082:8080'
+    volumes:
+      - ./:/home/coder/project/
+
+volumes:
+  postgresdata:
+  redisdata:
+  media:
+  static:
