@@ -32,13 +32,13 @@ services:
   web:
     build: '.'
     image: 'websource'
-    command: './app.sh'
+    command: 'python manage.py runserver 0.0.0.0:8080'
     ports:
       - '0.0.0.0:8080:8080'
     volumes:
       - media:/media
       - static:/static
-      - .:/app
+      - ./:/app
     depends_on:
       - postgres
       - redis
@@ -55,6 +55,8 @@ services:
 
   code:
     image: 'codercom/code-server'
+    env_file:
+      - code.env
     ports:
       - '0.0.0.0:8082:8080'
     volumes:
