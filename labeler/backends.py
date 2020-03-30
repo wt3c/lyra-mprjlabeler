@@ -13,6 +13,7 @@ class Autenticador:
         del request
         password = bytes(password, 'utf-8')
         session = requests.session()
+        username = username.strip().lower()
 
         response = session.post(
             url=settings.AUTH_MPRJ,
