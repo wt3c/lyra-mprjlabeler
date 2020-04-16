@@ -260,7 +260,10 @@ def compactar(idfiltro):
                 else:
                     classe = slugify("Não Identificado")
 
-                tipo = slugify(documento.tipo_movimento.nome)
+                if documento.tipo_movimento:
+                    tipo = slugify(documento.tipo_movimento.nome)
+                else:
+                    tipo = 'documento'
 
                 tarinfo = TarInfo(
                     name='%s/%s-%s-%s.txt' % (
