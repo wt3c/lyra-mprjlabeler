@@ -251,7 +251,7 @@ def compactar(idfiltro):
 
             with BytesIO() as conteudo_documento:
                 conteudo_documento.write(
-                    documento.conteudo.encode('latin1')
+                    documento.conteudo.encode('latin1', 'ignore')
                 )
                 conteudo_documento.seek(0)
 
