@@ -1,5 +1,6 @@
 import io
 import logging
+import re
 
 import requests
 from django.conf import settings
@@ -58,11 +59,11 @@ def mapnow(x, y):
     return list(map(x, y))
 
 
-def obter_numeros_documentos(documentos):
+def obter_numeros_documentos(documentos, tipo_movimento):
     return mapnow(
         lambda x: x["idDocumento"],
         filter(
-            lambda x: "peticao inicial" in x["descricao"].lower(), documentos
+            lambda x: re.search(tipo_movimento.nome_tj, x["descricao"].lower()), documentos
         ),
     )
 
@@ -75,7 +76,10 @@ def processar(processo):
     try:
         movimentos = obter_documentos(processo)
         if movimentos:
-            numeros_documentos = obter_numeros_documentos(movimentos)
+            numeros_documentos = obter_numeros_documentos(
+                movimentos,
+                tipo_movimento,
+            )
             tqnumeros_documentos = tqdm(numeros_documentos, leave=False)
             integras = mapnow(
                 lambda x: obter_integra(processo, x, tqnumeros_documentos),
