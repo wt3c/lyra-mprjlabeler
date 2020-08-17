@@ -4,6 +4,7 @@ from classificador_lyra.regex import constroi_classificador_dinamica
 from processostjrj.mni import consulta_processo, cria_cliente
 from slugify import slugify
 from filtro.models import Documento
+from filtro.task_utils.iniciais import processar as processar_iniciais
 
 
 logger = logging.getLogger(__name__)
@@ -20,22 +21,27 @@ def parse_documentos(m_filtro):
     return retorno
 
 
-def download_processos(documentos):
+def download_processos(documentos, trazer_iniciais=False):
     cliente = cria_cliente()
     for numero in documentos:
+        iniciais = []
+        f_numero = numero.strip().zfill(20)
         if not numero:
             continue
         try:
             processo = consulta_processo(
                 cliente,
-                numero.strip().zfill(20),
+                f_numero,
                 movimentos=True,
                 _value_1=[{"incluirCabecalho": True}]
             )
+            if trazer_iniciais:
+                iniciais = processar_iniciais(f_numero)
+
         except Exception as error:
             logger.error('Erro no download do processo %s' % numero, error)
             continue
-        yield (numero, processo)
+        yield (numero, processo, iniciais)
 
 
 def parse_documento(tipos_movimento, processo):

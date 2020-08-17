@@ -9,6 +9,7 @@ django-ordered-model==3.1.1
 gunicorn==19.7.1
 idna==2.7
 newrelic==3.2.0.91
+pdfminer.six==20200726
 psycopg2==2.7.4
 psycopg2-binary==2.7.4
 pytz==2018.3
@@ -18,6 +19,7 @@ raven==6.6.0
 redis==3.2.1
 requests==2.19.1
 six==1.11.0
+tqdm==4.48.2
 urllib3==1.23
 whitenoise==3.3.1
 git+https://github.com/MinisterioPublicoRJ/pyLDAvis.git
