@@ -14,6 +14,8 @@ from tqdm import tqdm
 from zeep import Transport
 from zeep import Client
 
+from filtro.models import TipoMovimento
+
 
 logger = logging.getLogger(__name__)
 
@@ -75,6 +77,7 @@ def obter_numeros_documentos(documentos):
 
 def processar(processo):
     processo = processo.replace('-', '').replace('.', '').split(';')[0].strip()
+    tipo_movimento = TipoMovimento.objects.get(nome=settings.NOME_FILTRO_PETICAO_INICIAL)
     try:
         movimentos = obter_documentos(processo)
         if movimentos:
@@ -85,10 +88,12 @@ def processar(processo):
                 tqnumeros_documentos
             )
             tqintegras = tqdm(list(enumerate(integras)), leave=False)
-            mapnow(
-                lambda x: salvar_integra(processo, x, tqintegras),
+            iniciais = mapnow(
+                lambda x: extrai_integra(processo, x, tqintegras, tipo_movimento),
                 tqintegras
             )
+            return iniciais
+
         else:
             logger.error(f"Nenhum movimento encontrado no processo {processo}")
             return 0
@@ -97,10 +102,11 @@ def processar(processo):
         return 0
     return 1
 
-def salvar_integra(processo, params, tqintegras):
+def extrai_integra(processo, params, tqintegras, tipo_movimento):
     seq, integra = params
     buffer_ = io.BytesIO(integra)
     texto = extract_text_from_pdf(buffer_)
+    return (processo, tipo_movimento, texto)
 
 
 def extract_text_from_pdf(fobj):
