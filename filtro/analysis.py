@@ -10,7 +10,7 @@ def modelar_lda(conteudos):
     vectorizer_all = TfidfVectorizer(
         ngram_range=(1, 2),
         max_df=0.6,
-        min_df=5,
+        min_df=2,
         max_features=2000
     )
 
