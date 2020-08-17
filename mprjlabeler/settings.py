@@ -163,3 +163,7 @@ CLASSIFICADOR_CHUNKSIZE = config(
     default=500,
     cast=int
 )
+
+
+ID_MNI = config("ID_MNI")
+SENHA_MNI = config("SENHA_MNI")
