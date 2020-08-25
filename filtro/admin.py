@@ -6,6 +6,7 @@ from .models import (
     ClasseFiltro,
     ItemFiltro,
     Documento,
+    UsuarioAcessoFiltro
 )
 
 
@@ -59,3 +60,4 @@ admin.site.register(Filtro, FiltroAdmin)
 admin.site.register(ClasseFiltro)
 admin.site.register(ItemFiltro)
 admin.site.register(Documento, DocumentoAdmin)
+admin.site.register(UsuarioAcessoFiltro)

@@ -15,6 +15,7 @@ from django.shortcuts import (
     get_object_or_404,
 )
 from django.urls import reverse
+from django.db.models import Q
 from django.views.decorators.http import require_http_methods
 from .forms import (
     AdicionarFiltroForm,
@@ -25,7 +26,8 @@ from .forms import (
 from filtro.models import (
     Filtro,
     ClasseFiltro,
-    ItemFiltro
+    ItemFiltro,
+    UsuarioAcessoFiltro
 )
 from .tasks import (
     submeter_classificacao,
@@ -35,16 +37,22 @@ from .tasks import (
 from .task_utils.functions import montar_estrutura_filtro
 
 
-def obter_filtro(idfiltro, username):
+def obter_filtro(idfiltro, username, responsavel=False):
+    base = obter_filtros(username, responsavel)
+
     return get_object_or_404(
-        Filtro,
-        pk=idfiltro,
-        responsavel=username)
+        base,
+        pk=idfiltro
+    )
 
 
-def obter_filtros(username):
+def obter_filtros(username, responsavel=False):
+    if responsavel:
+        return Filtro.objects.filter(
+            Q(responsavel=username)
+        )
     return Filtro.objects.filter(
-        responsavel=username
+        (Q(responsavel=username) | Q(usuarioacessofiltro__usuario=username))
     )
 
 
@@ -479,3 +487,33 @@ def mediaview(request, mediafile):
 def explorar_lda(request, idfiltro):
     m_filtro = obter_filtro(idfiltro, request.user.username)
     return HttpResponse(m_filtro.saida_lda)
+
+
+@login_required
+@require_http_methods(['GET'])
+def get_usuarios_acessos(request, idfiltro):
+    m_filtro = obter_filtro(idfiltro, request.user.username, True)
+
+    return JsonResponse(
+        [
+            str(usuario.usuario)
+            for usuario in m_filtro.usuarioacessofiltro_set.all()
+        ],
+        safe=False
+    )
+
+
+@login_required
+@require_http_methods(['POST'])
+def adicionar_usuario_filtro(request, idfiltro):
+    m_filtro = obter_filtro(idfiltro, request.user.username, True)
+    username = request.POST.get('username')
+
+    n_acesso = UsuarioAcessoFiltro(
+        filtro=m_filtro,
+        usuario=username
+    )
+
+    n_acesso.save()
+
+    return JsonResponse({'status': 'OK'})

@@ -37,7 +37,9 @@ from filtro.views import (
     mediaview,
     baixar_estrutura,
     reaplicar_filtro,
-    explorar_lda
+    explorar_lda,
+    get_usuarios_acessos,
+    adicionar_usuario_filtro,
 )
 
 
@@ -144,6 +146,11 @@ urlpatterns = [
     path(
         'nested_admin/',
         include('nested_admin.urls')
+    ),
+    path(
+        'filtros/<int:idfiltro>/acesso',
+        get_usuarios_acessos,
+        name='filtros-obter-usuarios'
     ),
 ] + static(
     settings.STATIC_URL,
