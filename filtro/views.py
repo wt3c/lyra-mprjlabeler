@@ -434,7 +434,8 @@ def listar_resultados(request, idfiltro):
             'total_classificados': total_classificados,
             'total_documentos': total_documentos,
             'total': total,
-            'classe': classe
+            'classe': classe,
+            'mostra_lda': m_filtro.saida_lda is not None
         }
     )
 

@@ -11,7 +11,7 @@
                     <div class="col-md-4 col-sm-12">
                         <div class="white-box bg-primary color-box">
                             <h1 style="float:right;">
-                                {% if mario.classe == 0 %}
+                                {% if mario.classe == 0 and mostra_lda %}
                                     <a href="#"
                                     data-toggle="modal" 
                                     data-target="#lda"
@@ -31,10 +31,11 @@
                             <p class="cb-text">{{mario.nomeclasse}}</p>
                             {% if mario.classe == 0 %}
                                 <h6 class="text-white font-semibold"><span class="font-light">--</span></h6>
+                                <h6 class="text-white font-semibold"><span class="font-light">--</span></h6>    
                             {% else %}
                                 <h6 class="text-white font-semibold">{{mario.percentual_classe|floatformat:0}}% <span class="font-light">dos classificados</span></h6>
+                                <h6 class="text-white font-semibold">{{mario.percentual_total|floatformat:0}}% <span class="font-light">do total</span></h6>    
                             {% endif %}
-                            <h6 class="text-white font-semibold">{{mario.percentual_total|floatformat:0}}% <span class="font-light">do total</span></h6>    
                         </div>
                     </div>
                     {% endfor %}
