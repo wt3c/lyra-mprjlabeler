@@ -214,7 +214,10 @@ def aplicar_lda(m_filtro):
         .values_list("conteudo", flat=True)
     )
 
-    dados = modelar_lda(conteudos)
+    if len(conteudos) >= settings.MININUM_DOC_COUNT_LDA:
+        dados = modelar_lda(conteudos)
+    else:
+        dados = None
 
     m_filtro.saida_lda = dados
     m_filtro.save()
