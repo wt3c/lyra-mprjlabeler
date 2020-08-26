@@ -3,6 +3,7 @@ import os
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django.db import connection
@@ -76,6 +77,20 @@ def filtros(request):
             'filtros': obter_filtros(request.user.username),
             'novofiltroform': novo_filtro_form
         }
+    )
+
+
+@login_required
+def lista_usuarios(request):
+    term = request.GET.get("term")
+    usuarios_regulares = get_user_model().objects.filter(
+        username__icontains=term,
+        is_staff=False,
+        is_superuser=False,
+    )
+    return JsonResponse(
+        [str(u.username) for u in usuarios_regulares],
+        safe=False
     )
 
 

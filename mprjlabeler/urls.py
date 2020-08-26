@@ -40,6 +40,7 @@ from filtro.views import (
     explorar_lda,
     get_usuarios_acessos,
     adicionar_usuario_filtro,
+    lista_usuarios,
 )
 
 
@@ -151,6 +152,11 @@ urlpatterns = [
         'filtros/<int:idfiltro>/acesso',
         get_usuarios_acessos,
         name='filtros-obter-usuarios'
+    ),
+    path(
+        'usuarios/lista',
+        lista_usuarios,
+        name='lista-usuarios'
     ),
 ] + static(
     settings.STATIC_URL,

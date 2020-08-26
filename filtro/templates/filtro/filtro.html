@@ -233,6 +233,16 @@
     $('#{{form.tipo_raspador.auto_id}}').on('changed.bs.select', alterarTipoRaspador)
 
     alterarTipoRaspador()
+
+    $("#compartilhar_nome_usuario").autocomplete({
+      source: "/usuarios/lista",
+      minLength: 3,
+      delay: 750,
+      response: (event, ui) => {
+          console.log(event)
+      }
+    })
+
 </script>
 
 {% endblock %}
