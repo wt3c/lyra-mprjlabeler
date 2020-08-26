@@ -427,7 +427,7 @@ def listar_resultados(request, idfiltro):
             'total_documentos': total_documentos,
             'total': total,
             'classe': classe,
-            'mostra_lda': total >= settings.MININUM_DOC_COUNT_LDA,
+            'mostra_lda': m_filtro.saida_lda is not None
         }
     )
 
