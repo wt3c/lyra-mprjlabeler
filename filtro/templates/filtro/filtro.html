@@ -79,14 +79,16 @@
                         <i class="fa fa-download m-r-10"></i>
                         Baixar Estrutura
                 </a>
-                <button type="button"
-                class="btn btn-default waves-effect waves-light m-r-10"
-                data-toggle="modal"
-                data-target="#compartilharFiltroModal"
-                onclick="">
-                    <i class="fa fa-share m-r-10"></i>
-                    Compartilhar Filtro
-                </button>
+                {% if is_filtro_owner %}
+                    <button type="button"
+                    class="btn btn-default waves-effect waves-light m-r-10"
+                    data-toggle="modal"
+                    data-target="#compartilharFiltroModal"
+                    onclick="">
+                        <i class="fa fa-share m-r-10"></i>
+                        Compartilhar Filtro
+                    </button>
+                 {% endif %}
             </div>
 
         </div>

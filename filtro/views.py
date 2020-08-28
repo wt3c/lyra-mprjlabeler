@@ -8,7 +8,7 @@ from django.core.paginator import Paginator
 from django.db.models import Count
 from django.db import connection
 from django.utils.encoding import smart_str
-from django.http import JsonResponse, StreamingHttpResponse, HttpResponse
+from django.http import JsonResponse, StreamingHttpResponse, HttpResponse, Http404
 from wsgiref.util import FileWrapper
 from django.shortcuts import (
     render,
@@ -194,6 +194,7 @@ def filtro(request, idfiltro):
             'idfiltro': idfiltro,
             'adicionarclasseform': AdicionarClasseForm(),
             'itemfiltroform': ItemFiltroForm(),
+            'is_filtro_owner': m_filtro.responsavel == request.user.username
         }
     )
 
@@ -204,16 +205,7 @@ def excuir_filtro(request):
     idfiltro = request.POST.get('idfiltroexcluir')
 
     m_filtro = obter_filtro(idfiltro, request.user.username)
-    responsavel = m_filtro.responsavel == request.user.username
-
-    if responsavel:
-        m_filtro.delete()
-    else:
-        get_object_or_404(
-            UsuarioAcessoFiltro,
-            filtro__id=idfiltro,
-            usuario=request.user.username
-        ).delete()
+    m_filtro.delete()
 
     messages.success(request, 'Filtro removido com Sucesso!')
     return redirect(
@@ -535,11 +527,14 @@ def adicionar_usuario_filtro(request, idfiltro):
     m_filtro = obter_filtro(idfiltro, request.user.username, True)
     username = request.POST.get('compartilhar_username')
 
-    obj, created = UsuarioAcessoFiltro.objects.get_or_create(
-        filtro=m_filtro,
-        usuario=username
-    )
+    if m_filtro.responsavel == request.user.username:
+        obj, created = UsuarioAcessoFiltro.objects.get_or_create(
+            filtro=m_filtro,
+            usuario=username
+        )
 
-    status = 200 if created else 400
+        status = 200 if created else 400
+    else:
+        raise Http404
 
     return JsonResponse({'created': created}, status=status)
