@@ -16,7 +16,7 @@ pytz==2018.3
 PyYAML==3.13
 sklearn==0.0
 redis==3.2.1
-requests==2.19.1
+requests==2.20.0
 six==1.11.0
 tqdm==4.48.2
 urllib3==1.23
