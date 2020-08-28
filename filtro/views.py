@@ -3,11 +3,12 @@ import os
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django.db import connection
 from django.utils.encoding import smart_str
-from django.http import JsonResponse, StreamingHttpResponse, HttpResponse
+from django.http import JsonResponse, StreamingHttpResponse, HttpResponse, Http404
 from wsgiref.util import FileWrapper
 from django.shortcuts import (
     render,
@@ -15,6 +16,7 @@ from django.shortcuts import (
     get_object_or_404,
 )
 from django.urls import reverse
+from django.db.models import Q
 from django.views.decorators.http import require_http_methods
 from .forms import (
     AdicionarFiltroForm,
@@ -25,7 +27,8 @@ from .forms import (
 from filtro.models import (
     Filtro,
     ClasseFiltro,
-    ItemFiltro
+    ItemFiltro,
+    UsuarioAcessoFiltro
 )
 from .tasks import (
     submeter_classificacao,
@@ -35,16 +38,22 @@ from .tasks import (
 from .task_utils.functions import montar_estrutura_filtro
 
 
-def obter_filtro(idfiltro, username):
+def obter_filtro(idfiltro, username, responsavel=False):
+    base = obter_filtros(username, responsavel)
+
     return get_object_or_404(
-        Filtro,
-        pk=idfiltro,
-        responsavel=username)
+        base,
+        pk=idfiltro
+    )
 
 
-def obter_filtros(username):
+def obter_filtros(username, responsavel=False):
+    if responsavel:
+        return Filtro.objects.filter(
+            Q(responsavel=username)
+        )
     return Filtro.objects.filter(
-        responsavel=username
+        (Q(responsavel=username) | Q(usuarioacessofiltro__usuario=username))
     )
 
 
@@ -68,6 +77,21 @@ def filtros(request):
             'filtros': obter_filtros(request.user.username),
             'novofiltroform': novo_filtro_form
         }
+    )
+
+
+@login_required
+def lista_usuarios(request):
+    term = request.GET.get("term")
+    usuarios_regulares = get_user_model().objects.filter(
+        ~Q(username=request.user.username),
+        username__icontains=term,
+        is_staff=False,
+        is_superuser=False,
+    )
+    return JsonResponse(
+        [str(u.username) for u in usuarios_regulares],
+        safe=False
     )
 
 
@@ -170,6 +194,7 @@ def filtro(request, idfiltro):
             'idfiltro': idfiltro,
             'adicionarclasseform': AdicionarClasseForm(),
             'itemfiltroform': ItemFiltroForm(),
+            'is_filtro_owner': m_filtro.responsavel == request.user.username
         }
     )
 
@@ -480,3 +505,36 @@ def mediaview(request, mediafile):
 def explorar_lda(request, idfiltro):
     m_filtro = obter_filtro(idfiltro, request.user.username)
     return HttpResponse(m_filtro.saida_lda)
+
+
+@login_required
+@require_http_methods(['GET'])
+def get_usuarios_acessos(request, idfiltro):
+    m_filtro = obter_filtro(idfiltro, request.user.username, True)
+
+    return JsonResponse(
+        [
+            str(usuario.usuario)
+            for usuario in m_filtro.usuarioacessofiltro_set.all()
+        ],
+        safe=False
+    )
+
+
+@login_required
+@require_http_methods(['POST'])
+def adicionar_usuario_filtro(request, idfiltro):
+    m_filtro = obter_filtro(idfiltro, request.user.username, True)
+    username = request.POST.get('compartilhar_username')
+
+    if m_filtro.responsavel == request.user.username:
+        obj, created = UsuarioAcessoFiltro.objects.get_or_create(
+            filtro=m_filtro,
+            usuario=username
+        )
+
+        status = 200 if created else 400
+    else:
+        raise Http404
+
+    return JsonResponse({'created': created}, status=status)

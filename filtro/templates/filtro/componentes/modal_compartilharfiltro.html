@@ -1,0 +1,29 @@
+<style>
+.ui-autocomplete { z-index:2147483647; }
+</style>
+
+<div class="modal fade" id="compartilharFiltroModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" style="display: none;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel1">Compartilhar Filtro</h4> 
+                </div>
+                <div style="display:none" id="modal-msg-success" class="alert alert-success" role="alert">Filtro compartilhado com sucesso!</div>
+                <div id="modal-msg-error" style="display:none" class="alert alert-danger" role="alert">Filtro já compartilhado com este usuário.</div>
+                <form method='POST' action="{% url 'adiciona-usuario-filtro' form.instance.pk %}" id="compartilhar_form">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">Nome do usuário:</label>
+                            <input type="text" class="form-control" name="compartilhar_username" id="compartilhar_nome_usuario" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Compartilhar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>

@@ -72,19 +72,23 @@
                     <i class="fa fa-plus m-r-10"></i>
                     Adicionar Classe de Filtro
                 </button>
-                <a type="button" 
+                <a type="button"
                     href='{% url "filtros-baixar-estrutura" idfiltro %}'
                     class="btn btn-success waves-effect waves-light m-r-10"
                     title="Baixa uma cópia da estrutura de filtros que pode ser utilizada na criação de novos filtros"> 
                         <i class="fa fa-download m-r-10"></i>
                         Baixar Estrutura
                 </a>
-                <a type="button" 
-                    href='{% url "filtros-classificar" idfiltro %}'
-                    class="btn btn-warning waves-effect waves-light m-r-10"> 
-                        <i class="fa fa-plus m-r-10"></i>
-                        Submeter para Classificação
-                </a>
+                {% if is_filtro_owner %}
+                    <button type="button"
+                    class="btn btn-default waves-effect waves-light m-r-10"
+                    data-toggle="modal"
+                    data-target="#compartilharFiltroModal"
+                    onclick="">
+                        <i class="fa fa-share m-r-10"></i>
+                        Compartilhar Filtro
+                    </button>
+                 {% endif %}
             </div>
 
         </div>
@@ -203,6 +207,9 @@
 <!-- Excluir Item de Filtro Modal-->
 {%include 'filtro/componentes/modal_confirmarexclusaoitem.html'  %}
 
+<!-- Compartilhar filtro com outros usuários -->
+{% include 'filtro/componentes/modal_compartilharfiltro.html' %}
+
 {% endblock %}
 
 {% block extrascripts %}
@@ -228,6 +235,64 @@
     $('#{{form.tipo_raspador.auto_id}}').on('changed.bs.select', alterarTipoRaspador)
 
     alterarTipoRaspador()
+
+    $("#compartilhar_nome_usuario").autocomplete({
+      source: "/usuarios/lista",
+      minLength: 3,
+      delay: 750,
+      response: (event, ui) => {
+          console.log(event)
+      }
+    })
+
+  function getCookie(name) {
+    // Function to get any cookie available in the session.
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = jQuery.trim(cookies[i]);
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  };
+  $.ajaxSetup({
+    beforeSend: function (xhr, settings) {
+      xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    }
+  });
+
+  $("#compartilhar_form").on("submit", function(evt) {
+    evt.preventDefault();
+
+    const formData = new FormData(this);
+    $.ajax({
+      url: this.action,
+      type: "POST",
+      processData: false,
+      contentType: false,
+      data: formData,
+      success: function(data) {
+          $("#modal-msg-success").show();
+          setTimeout(function(){
+              $("#modal-msg-success").hide();
+              $("#compartilhar_form").each(function(){this.reset()});
+              $("#compartilharFiltroModal").modal("toggle");
+          }, 1000)
+      },
+      error: function(data) {
+          $("#modal-msg-error").show();
+          setTimeout(function(){
+              $("#modal-msg-error").hide();
+          }, 2000)
+      }
+    })
+  })
 </script>
 
 {% endblock %}
