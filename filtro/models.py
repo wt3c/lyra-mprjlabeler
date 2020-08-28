@@ -66,6 +66,9 @@ class UsuarioAcessoFiltro(models.Model):
     filtro = models.ForeignKey('Filtro', on_delete=models.CASCADE)
     usuario = models.CharField(max_length=50)
 
+    class Meta:
+        unique_together = ["filtro", "usuario"]
+
     def __str__(self):
         if self:
             return self.usuario

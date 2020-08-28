@@ -535,11 +535,11 @@ def adicionar_usuario_filtro(request, idfiltro):
     m_filtro = obter_filtro(idfiltro, request.user.username, True)
     username = request.POST.get('compartilhar_username')
 
-    n_acesso = UsuarioAcessoFiltro(
+    obj, created = UsuarioAcessoFiltro.objects.get_or_create(
         filtro=m_filtro,
         usuario=username
     )
 
-    n_acesso.save()
+    status = 200 if created else 400
 
-    return JsonResponse({'status': 'OK'})
+    return JsonResponse({'created': created}, status=status)
