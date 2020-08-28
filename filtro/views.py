@@ -204,7 +204,16 @@ def excuir_filtro(request):
     idfiltro = request.POST.get('idfiltroexcluir')
 
     m_filtro = obter_filtro(idfiltro, request.user.username)
-    m_filtro.delete()
+    responsavel = m_filtro.responsavel == request.user.username
+
+    if responsavel:
+        m_filtro.delete()
+    else:
+        get_object_or_404(
+            UsuarioAcessoFiltro,
+            filtro__id=idfiltro,
+            usuario=request.user.username
+        ).delete()
 
     messages.success(request, 'Filtro removido com Sucesso!')
     return redirect(
