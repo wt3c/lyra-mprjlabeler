@@ -276,8 +276,18 @@
       contentType: false,
       data: formData,
       success: function(data) {
-          $("#compartilhar_form").each(function(){this.reset()});
-          $("#compartilharFiltroModal").modal("toggle");
+          $("#modal-msg-success").show();
+          setTimeout(function(){
+              $("#modal-msg-success").hide();
+              $("#compartilhar_form").each(function(){this.reset()});
+              $("#compartilharFiltroModal").modal("toggle");
+          }, 1000)
+      },
+      error: function(data) {
+          $("#modal-msg-error").show();
+          setTimeout(function(){
+              $("#modal-msg-error").hide();
+          }, 2000)
       }
     })
   })
