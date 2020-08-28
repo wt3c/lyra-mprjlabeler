@@ -158,6 +158,11 @@ urlpatterns = [
         lista_usuarios,
         name='lista-usuarios'
     ),
+    path(
+        'filtros/<int:idfiltro>/acesso-usuario',
+        adicionar_usuario_filtro,
+        name='adiciona-usuario-filtro'
+    ),
 ] + static(
     settings.STATIC_URL,
     document_root=settings.STATIC_ROOT

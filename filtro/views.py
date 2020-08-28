@@ -84,6 +84,7 @@ def filtros(request):
 def lista_usuarios(request):
     term = request.GET.get("term")
     usuarios_regulares = get_user_model().objects.filter(
+        ~Q(username=request.user.username),
         username__icontains=term,
         is_staff=False,
         is_superuser=False,
@@ -523,7 +524,7 @@ def get_usuarios_acessos(request, idfiltro):
 @require_http_methods(['POST'])
 def adicionar_usuario_filtro(request, idfiltro):
     m_filtro = obter_filtro(idfiltro, request.user.username, True)
-    username = request.POST.get('username')
+    username = request.POST.get('compartilhar_username')
 
     n_acesso = UsuarioAcessoFiltro(
         filtro=m_filtro,
