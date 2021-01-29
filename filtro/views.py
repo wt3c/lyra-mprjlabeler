@@ -54,12 +54,11 @@ def obter_filtro(idfiltro, username, responsavel=False):
 
 def obter_filtros(username, responsavel=False):
     if responsavel:
-        return Filtro.objects.filter(
-            Q(responsavel=username)
-        )
+        return Filtro.objects.filter(responsavel=username)
+
     return Filtro.objects.filter(
         (Q(responsavel=username) | Q(usuarioacessofiltro__usuario=username))
-    )
+    ).distinct()
 
 
 def dictfetchall(cursor):
