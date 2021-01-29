@@ -52,14 +52,14 @@ def obter_filtro(idfiltro, username, responsavel=False):
     )
 
 
-def obter_filtros(username, only_responsavel=False):
-    qs = Filtro.objects.filter(responsavel=username)
-    if not only_responsavel:
-        qs = qs.union(
-            Filtro.objects.filter(usuarioacessofiltro__usuario=username)
+def obter_filtros(username, responsavel=False):
+    if responsavel:
+        return Filtro.objects.filter(
+            Q(responsavel=username)
         )
-
-    return qs
+    return Filtro.objects.filter(
+        (Q(responsavel=username) | Q(usuarioacessofiltro__usuario=username))
+    )
 
 
 def dictfetchall(cursor):
