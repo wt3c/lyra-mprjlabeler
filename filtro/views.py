@@ -8,7 +8,12 @@ from django.core.paginator import Paginator
 from django.db.models import Count
 from django.db import connection
 from django.utils.encoding import smart_str
-from django.http import JsonResponse, StreamingHttpResponse, HttpResponse, Http404
+from django.http import (
+    JsonResponse,
+    StreamingHttpResponse,
+    HttpResponse,
+    Http404
+)
 from wsgiref.util import FileWrapper
 from django.shortcuts import (
     render,
