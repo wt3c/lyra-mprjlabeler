@@ -8,7 +8,12 @@ from django.core.paginator import Paginator
 from django.db.models import Count
 from django.db import connection
 from django.utils.encoding import smart_str
-from django.http import JsonResponse, StreamingHttpResponse, HttpResponse, Http404
+from django.http import (
+    JsonResponse,
+    StreamingHttpResponse,
+    HttpResponse,
+    Http404
+)
 from wsgiref.util import FileWrapper
 from django.shortcuts import (
     render,
@@ -49,12 +54,11 @@ def obter_filtro(idfiltro, username, responsavel=False):
 
 def obter_filtros(username, responsavel=False):
     if responsavel:
-        return Filtro.objects.filter(
-            Q(responsavel=username)
-        )
+        return Filtro.objects.filter(responsavel=username)
+
     return Filtro.objects.filter(
         (Q(responsavel=username) | Q(usuarioacessofiltro__usuario=username))
-    )
+    ).distinct()
 
 
 def dictfetchall(cursor):
