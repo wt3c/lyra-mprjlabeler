@@ -327,6 +327,9 @@ def adicionar_itemfiltro(request):
 
             messages.success(request, 'Item de Filtro adicionado!')
 
+    else:
+        messages.error(request, f_itemfiltro.errors["__all__"])
+
     return redirect(
         reverse(
             'filtros-filtro',

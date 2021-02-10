@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from .models import (
     Filtro,
@@ -70,6 +72,20 @@ class ItemFiltroForm(BaseModelForm):
         required=False,
         widget=forms.widgets.HiddenInput()
     )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        regex = cleaned_data["regex"]
+        termos = cleaned_data["termos"]
+        if regex:
+            try:
+                re.compile(termos)
+            except re.error:
+                raise forms.ValidationError(
+                    "A expressão regular contém um ou mais erros"
+                )
+
+        return cleaned_data
 
     class Meta:
         model = ItemFiltro
