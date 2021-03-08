@@ -91,7 +91,9 @@ def submeter_classificacao_arquivotabulado(m_filtro, idfiltro):
 
     with m_filtro.arquivo_documentos.open(mode="rb") as saidinha:
         saidinha = NullBytesIOWrapper(saidinha, "latin-1")
-        reader = csv.reader(saidinha)
+        dialect = csv.Sniffer().sniff(saidinha.read(2048))
+        saidinha.seek(0)
+        reader = csv.reader(saidinha, dialect)
         for linha in reader:
             m_documento = Documento()
             m_documento.filtro = m_filtro
