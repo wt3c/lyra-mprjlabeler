@@ -13,7 +13,7 @@ pdfminer.six==20200726
 psycopg2==2.7.4
 psycopg2-binary==2.7.4
 pytz==2018.3
-PyYAML==3.13
+PyYAML==5.4
 sklearn==0.0
 redis==3.2.1
 requests==2.19.1
