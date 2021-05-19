@@ -13,6 +13,7 @@ from classificador_lyra.regex import classifica_item_sequencial
 from django.conf import settings
 from django.core.files import File
 from slugify import slugify
+import chardet
 
 from .analysis import modelar_lda
 from .models import Documento, Filtro
@@ -41,7 +42,7 @@ SITUACOES_EXECUTORES = "246"
 class NullBytesIOWrapper(TextIOWrapper):
     def readline(self, *args, **kwargs):
         data = super().readline(*args, **kwargs)
-        return data.replace("\x00", "")
+        return data.replace("\x00", "").replace("\xa0", " ")
 
 
 def submeter_classificacao_tjrj(m_filtro, idfiltro):
@@ -89,11 +90,22 @@ def submeter_classificacao_tjrj(m_filtro, idfiltro):
 def submeter_classificacao_arquivotabulado(m_filtro, idfiltro):
     logger.info("Vou parsear os documentos")
 
-    with m_filtro.arquivo_documentos.open(mode="rb") as saidinha:
-        saidinha = NullBytesIOWrapper(saidinha, "latin-1")
-        dialect = csv.Sniffer().sniff(saidinha.read(2048))
-        saidinha.seek(0)
-        reader = csv.reader(saidinha, dialect)
+    with m_filtro.arquivo_documentos.open(mode="rb") as f_in:
+        enc = chardet.detect(f_in.readline())['encoding']
+        f_in.seek(0)
+        f_in = NullBytesIOWrapper(f_in, enc)
+
+        dialect = csv.Sniffer().sniff(f_in.read(4096), delimiters=",;")
+        f_in.seek(0)
+
+        logger.info("Encoding encontrado: {}".format(enc))
+        logger.info(
+            "Dialect info: delimiter {} -escapechar {} -quotechar {}".format(
+                dialect.delimiter, dialect.escapechar, dialect.quotechar
+            )
+        )
+
+        reader = csv.reader(f_in, dialect)
         for linha in reader:
             m_documento = Documento()
             m_documento.filtro = m_filtro
