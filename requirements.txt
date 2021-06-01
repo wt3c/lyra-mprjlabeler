@@ -19,7 +19,7 @@ redis==3.2.1
 requests==2.19.1
 six==1.11.0
 tqdm==4.48.2
-urllib3==1.23
+urllib3==1.26.5
 whitenoise==3.3.1
 git+https://github.com/MinisterioPublicoRJ/pyLDAvis.git
 git+https://github.com/MinisterioPublicoRJ/processostjrj.git@develop
