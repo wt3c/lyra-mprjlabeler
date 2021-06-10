@@ -2,7 +2,7 @@ celery==4.2.1
 certifi==2018.1.18
 chardet==3.0.4
 dj-database-url==0.4.2
-Django==2.0.2
+Django==2.2.24
 django-yamlfield==1.0.3
 django-nested-admin==3.2.3
 django-ordered-model==3.1.1
