@@ -1,4 +1,4 @@
-celery==4.2.1
+celery==5.2.2
 certifi==2018.1.18
 chardet==3.0.4
 dj-database-url==0.4.2
