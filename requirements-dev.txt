@@ -1,0 +1,15 @@
+-r requirements.txt
+model-mommy==2.0.0
+ipdb==0.13.9
+ipython==8.1.1
+pylint==2.12.2
+pylint-django==2.5.2
+pylint-plugin-utils==0.7
+flake8==4.0.1
+httmock==1.4.0
+coverage==6.3.2
+docker==5.0.3
+docker-compose==1.29.2
+django-livereload-server==0.4
+pytest==7.0.1
+yapf==0.32.0
