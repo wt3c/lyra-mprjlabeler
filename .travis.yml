@@ -1,14 +1,13 @@
 language: python
 python:
-  - "3.5"
-  - "3.6"
+  - "3.9"
 install:
   pip install -r dev-requirements.txt;
 script:
   - flake8 .
   - coverage run manage.py test --settings=mprjlabeler.test_settings
 after_success:
-  - codecov 
+  - codecov
 notifications:
   email:
     - felipe.gomes.ferreira@gmail.com
