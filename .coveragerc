@@ -10,4 +10,4 @@ omit =
     mprjlabeler/test_settings.py
     venvtest/*
     venv/*
-
+    lib/*
