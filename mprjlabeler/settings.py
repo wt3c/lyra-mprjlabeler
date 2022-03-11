@@ -11,13 +11,13 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import sys
 from dj_database_url import parse as db_url
 from django.contrib import messages
 from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -30,7 +30,6 @@ SECRET_KEY = 'bt4)*8x(4aza76rh7kq53w55dap350#l%ka7iu0&g+&mmct22%'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -47,6 +46,10 @@ INSTALLED_APPS = [
     'nested_admin',
 ]
 
+DEV_PARTY_APPS = [
+    'debug_toolbar',
+]
+
 MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -57,6 +60,21 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+DEV_MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+
+if config("AMBIENTE", None) == "desenvolvimento":
+    INSTALLED_APPS += DEV_PARTY_APPS
+    MIDDLEWARE += DEV_MIDDLEWARE
+
+    # necessário para o debug_toobar
+    INTERNAL_IPS = [
+        # ...
+        "127.0.0.1",
+        # ...
+    ]
 
 ROOT_URLCONF = 'mprjlabeler.urls'
 
@@ -79,17 +97,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mprjlabeler.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-DATABASES = {
-    'default': config(
-        'DATABASE_URL',
-        cast=db_url
-    )
-}
-
+TESTING = sys.argv[1:2] == ['test']
+if not TESTING:
+    DATABASES = {
+        'default': config(
+            'DATABASE_URL',
+            cast=db_url
+        )
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            "TEST": {
+                "NAME": os.path.join(BASE_DIR, "test_db.sqlite3"),
+            }
+        }, }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -109,7 +135,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -123,7 +148,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
@@ -133,12 +157,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
 AUTH_MPRJ = 'http://apps.mprj.mp.br/mpmapas/api/authentication'
 AITJ_MPRJ_USERINFO = 'http://apps.mprj.mp.br/mpmapas/api/authenticate'
 LOGIN_URL = '/login/'
 
-#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'info',
@@ -151,19 +174,16 @@ MESSAGE_TAGS = {
 CELERY_BROKER_URL = config("CELERY_URL", None)
 CELERY_TASK_QUEUE = config("CELERY_QUEUE", None)
 
-
 if config("AMBIENTE", None) == "producao":
     DEBUG = False
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = None
-
 
 CLASSIFICADOR_CHUNKSIZE = config(
     'CLASSIFICADOR_CHUNKSIZE',
     default=500,
     cast=int
 )
-
 
 ID_MNI = config("ID_MNI")
 SENHA_MNI = config("SENHA_MNI")
