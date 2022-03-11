@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.contrib.auth.views import logout
+from django.contrib.auth import logout
 from django.conf.urls.static import static
 from django.conf import settings
 from labeler.views import campanhas, campanha, login, index
@@ -163,6 +163,9 @@ urlpatterns = [
         adicionar_usuario_filtro,
         name='adiciona-usuario-filtro'
     ),
+    #### DEV PARTY ####
+    path('__debug__/', include('debug_toolbar.urls')),
+
 ] + static(
     settings.STATIC_URL,
     document_root=settings.STATIC_ROOT
